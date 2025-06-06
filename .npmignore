@@ -1,0 +1,25 @@
+# Development files
+src/
+docs/
+public/
+.cursor/
+.git/
+.yarn/
+node_modules/
+
+# Config files
+vite.config.ts
+tsconfig.*.json
+eslint.config.js
+.editorconfig
+.gitignore
+.gitattributes
+.yarnrc.yml
+yarn.lock
+todos.md
+
+# Development HTML
+index.html
+
+# Only include the built library
+# dist/ is included via package.json "files" field 

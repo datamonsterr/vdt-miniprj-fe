@@ -1,15 +1,31 @@
 {
-  "name": "vdt-phase1-miniproject",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@datamonsterr/vdt-dashboard",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
   "packageManager": "yarn@4.9.2",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "prepublishOnly": "npx tsc && npx vite build --mode library"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.31.9",
@@ -50,5 +66,28 @@
     "typescript": "~5.6.2",
     "vite": "^6.0.1",
     "vitest": "^2.1.5"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "keywords": [
+    "database",
+    "schema",
+    "visual-design",
+    "drag-drop",
+    "react",
+    "embeddable",
+    "dashboard",
+    "database-design",
+    "web-component"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/datamonsterr/vdt-dashboard.git"
+  },
+  "homepage": "https://github.com/datamonsterr/vdt-dashboard#readme",
+  "bugs": {
+    "url": "https://github.com/datamonsterr/vdt-dashboard/issues"
   }
 }
