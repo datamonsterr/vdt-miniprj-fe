@@ -2,6 +2,8 @@ import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
 import RootLayout from './layouts/RootLayout'
 import NotFound from './pages/404'
+import SchemaBuilder from './pages/SchemaBuilder'
+import Demo from './pages/Demo'
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +14,14 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <App />,
+      },
+      {
+        path: '/schema-builder',
+        element: <SchemaBuilder />,
+      },
+      {
+        path: '/demo',
+        element: <Demo />,
       },
     ],
   },

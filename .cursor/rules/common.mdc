@@ -4,3 +4,4 @@ globs:
 alwaysApply: true
 ---
 Our app is a web components that can be used in other web app as library.
+Read the todos.md for the task that we have done. Update the todos after complete one task, create new if we need something to be done. Summarize your completed task in that todos and move the task up in the done section.

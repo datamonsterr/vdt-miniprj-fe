@@ -1,3 +1,9 @@
+# Description
+This web component is used to embed into other web apps. Other developer will place a button to navigate to our views (we will provide the button too with customizable style but our functionalities).
+We have a view for constructing database, it's like no-code drag and drop UI for building database. We can create table drag to add columns to it then define the data types. This will support SQL based database only so we use datatypes related to SQL.
+The app required SSO through google so we use Clerk for that and it's already setup but the view is not done yet.
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
