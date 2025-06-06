@@ -10,7 +10,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
+import { SchemaBuilderThemeToggle } from '@/components/ui/schema-builder-theme-toggle'
+import { SchemaBuilderThemeProvider, useSchemaBuilderTheme } from '@/contexts/schema-builder-theme'
+import { UserSettings } from '@/components/auth/UserSettings'
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { useSchemaStore } from '@/stores/schema-store'
 import { useUndoRedo } from '@/hooks/useUndoRedo'
@@ -42,6 +44,14 @@ export interface SchemaCanvasProps {
    */
   showThemeToggle?: boolean
   /**
+   * Whether to show the user settings button (default: true)
+   */
+  showUserSettings?: boolean
+  /**
+   * Initial theme for the schema builder (default: system preference)
+   */
+  initialTheme?: 'light' | 'dark'
+  /**
    * Custom className for the canvas container
    */
   className?: string
@@ -61,7 +71,7 @@ export interface SchemaCanvasProps {
  * - Foreign key relationship creation
  * - Canvas panning with hand tool
  * - Undo/redo functionality
- * - Light/dark theme toggle
+ * - Light/dark theme toggle (isolated to the canvas)
  * 
  * @example
  * ```tsx
@@ -70,19 +80,22 @@ export interface SchemaCanvasProps {
  *   showToolbar={true}
  *   showUndoRedo={true}
  *   showThemeToggle={true}
+ *   initialTheme="dark"
  * />
  * ```
  */
-export function SchemaCanvas({
+function SchemaCanvasInternal({
   initialTables = [],
   initialForeignKeys = [],
   onSchemaChange,
   showToolbar = true,
   showUndoRedo = true,
   showThemeToggle = true,
+  showUserSettings = true,
   className = '',
   style = {},
-}: SchemaCanvasProps) {
+}: Omit<SchemaCanvasProps, 'initialTheme'>) {
+  const { theme } = useSchemaBuilderTheme()
   // Use Zustand store
   const {
     tables,
@@ -283,7 +296,7 @@ export function SchemaCanvas({
 
   return (
     <div 
-      className={`relative w-full h-full bg-background ${className}`}
+      className={`relative w-full h-full bg-background ${theme} ${className}`}
       style={style}
     >
       {/* Floating Toolbar */}
@@ -324,17 +337,19 @@ export function SchemaCanvas({
           style={{ zIndex: Z_INDEX.TOOLBAR }}
         >
           <UndoRedoToolbar />
-          {showThemeToggle && <ThemeToggle />}
+          {showThemeToggle && <SchemaBuilderThemeToggle />}
+          {showUserSettings && <UserSettings />}
         </div>
       )}
 
       {/* Floating Theme Toggle (when undo/redo is hidden) */}
-      {!showUndoRedo && showThemeToggle && (
+      {!showUndoRedo && (showThemeToggle || showUserSettings) && (
         <div 
-          className="absolute top-4 right-4" 
+          className="absolute top-4 right-4 flex gap-2" 
           style={{ zIndex: Z_INDEX.TOOLBAR }}
         >
-          <ThemeToggle />
+          {showThemeToggle && <SchemaBuilderThemeToggle />}
+          {showUserSettings && <UserSettings />}
         </div>
       )}
 
@@ -454,5 +469,18 @@ export function SchemaCanvas({
         </DialogContent>
       </Dialog>
     </div>
+  )
+}
+
+/**
+ * SchemaCanvas - Main export component with theme provider
+ */
+export function SchemaCanvas(props: SchemaCanvasProps) {
+  const { initialTheme, ...restProps } = props
+  
+  return (
+    <SchemaBuilderThemeProvider initialTheme={initialTheme}>
+      <SchemaCanvasInternal {...restProps} />
+    </SchemaBuilderThemeProvider>
   )
 } 

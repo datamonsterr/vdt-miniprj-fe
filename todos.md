@@ -6,10 +6,10 @@
 - [x] Structure our code
 
 # Authentication & Context Setup (4 hours)
-- [ ] Create auth context with Clerk integration (AuthContext.tsx, AuthProvider.tsx, AuthConsumer.tsx)
-- [ ] Add authentication hook for managing user state
-- [ ] Create protected route wrapper component
-- [ ] Add sign-in/sign-out UI components using shadcn
+- [x] Create auth context with Clerk integration (AuthContext.tsx, AuthProvider.tsx, AuthConsumer.tsx)
+- [x] Add authentication hook for managing user state
+- [x] Create protected route wrapper component
+- [x] Add sign-in/sign-out UI components using shadcn
 
 # Core Types & Models (3 hours)
 - [x] Define database schema types (Table, Column, DataType, Relationship)
@@ -64,7 +64,7 @@
 - [x] Create SchemaBuilder main page component
 - [x] Build complete schema builder interface with tools and canvas
 - [x] Add routing for schema builder views  
-- [ ] Add WelcomePage for authenticated users
+- [x] Add Dashboard page for authenticated users
 - [ ] Create DatabaseListPage for managing multiple databases
 - [ ] Build DatabasePreviewPage for viewing created schemas
 
@@ -75,7 +75,7 @@
 - [ ] Create shareable database links
 
 # Web Component Integration (3 hours)
-- [ ] Create EmbeddableButton component for other apps
+- [x] Create EmbeddableDashboard component for other apps
 - [ ] Build iframe communication system for embedding
 - [ ] Add web component build configuration
 - [ ] Create NPM package setup for distribution
@@ -106,6 +106,39 @@
 **Total Estimated Time: 65 hours**
 
 ## Recently Completed ✅
+
+- **Dashboard Component & Web Component Integration**: Created a comprehensive dashboard system:
+  - **Dashboard Page**: Created `/dashboard` route as the main entry point for authenticated users with cards for different features
+  - **Schema Builder Card**: Contains buttons to create database schemas and view created databases (placeholder for future implementation)
+  - **Demo Card**: Provides access to the demo functionality
+  - **User Settings Integration**: Moved authentication controls from schema builder to dashboard header
+  - **EmbeddableDashboard Component**: Created a complete embeddable component that other applications can import and use
+  - **Modal-based Interface**: Dashboard opens in a customizable modal with different size options (`sm`, `md`, `lg`, `xl`, `full`)
+  - **Navigation Between Views**: Seamless navigation between dashboard, schema builder, and demo within the modal
+  - **Configurable Features**: Props to control which features are shown (`showDemo`, `showViewDatabases`)
+  - **Schema Change Callbacks**: Integration with parent applications via `onSchemaChange` callback
+  - **Flexible Button Customization**: Customizable trigger button with different variants, sizes, and styling
+  - **Authentication Separation**: Removed UserSettings from SchemaCanvas component, now handled at dashboard level
+  - **Route Updates**: Updated app routing to redirect authenticated users to dashboard instead of directly to schema builder
+
+- **Authentication System with Clerk SSO**: Implemented comprehensive authentication system with:
+  - **Auth Context**: Created AuthContext, AuthProvider, and AuthConsumer components following the project structure
+  - **Protected Routes**: ProtectedRoute component that redirects unauthenticated users to login
+  - **Login/Signup Pages**: Beautiful login and signup pages with Clerk's SSO integration and custom styling
+  - **User Settings Component**: UserSettings dropdown with avatar, profile info, and logout functionality
+  - **Schema Builder Integration**: Added UserSettings component next to the theme toggle in the top-right corner
+  - **Route Protection**: SchemaBuilder now requires authentication; redirects to login if not authenticated
+  - **Seamless UX**: App component redirects authenticated users to schema builder, shows auth options for guests
+  - **Shadcn Components**: Added dropdown-menu and avatar components from shadcn for consistent UI
+- **Schema Builder Theme System**: Implemented isolated theme management for the SchemaCanvas component with:
+  - **useSchemaBuilderTheme Hook**: Custom context for theme management independent of global app theme
+  - **SchemaBuilderThemeProvider**: Isolated theme provider with localStorage persistence and system preference detection
+  - **SchemaBuilderThemeToggle**: Dedicated theme toggle button for the schema builder
+  - **Local Theme Application**: Theme classes applied only to the canvas container, not globally
+  - **Reduced Dark Theme Contrast**: Enhanced dark theme with softer colors for better eye comfort
+  - **Props Interface**: Added `initialTheme` prop for external theme control
+  - **Backward Compatibility**: Existing SchemaCanvas usage continues to work without changes
+
 - **Enhanced ConnectionLine Component**: Implemented smaller arrows (6x4px vs 10x7px), positioned connection points outside table boundaries (20px offset), added click selection with visual feedback (darker blue, thicker stroke), hover effects, invisible click area for better UX, and delete button functionality when connection is selected.
 
 - **Undo/Redo System with Zundo**: Implemented comprehensive undo/redo functionality using Zustand + Zundo middleware. Features include:
