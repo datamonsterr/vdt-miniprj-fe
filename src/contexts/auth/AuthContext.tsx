@@ -1,6 +1,5 @@
-import { createContext, useContext } from 'react'
-import { useUser, useAuth as useClerkAuth } from '@clerk/clerk-react'
 import type { UserResource } from '@clerk/types'
+import { createContext, useContext } from 'react'
 
 export interface AuthContextType {
   user: UserResource | null | undefined

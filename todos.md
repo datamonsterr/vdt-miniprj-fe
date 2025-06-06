@@ -76,6 +76,7 @@
 
 # Web Component Integration (3 hours)
 - [x] Create EmbeddableDashboard component for other apps
+- [x] Create self-contained embeddable components that work without external dependencies
 - [ ] Build iframe communication system for embedding
 - [x] Add web component build configuration
 - [x] Create NPM package setup for distribution
@@ -87,6 +88,7 @@
 - [ ] Build E2E tests for main user journey
 
 # Documentation & Polish (3 hours)
+- [x] Create comprehensive embeddable components documentation
 - [ ] Create component documentation with Storybook setup
 - [ ] Add TypeScript documentation comments
 - [ ] Build usage examples for web component integration
@@ -106,6 +108,98 @@
 **Total Estimated Time: 65 hours**
 
 ## Recently Completed ✅
+
+- **Theme Context Consolidation** (2024-01-03): Successfully removed the schema-builder-theme context and consolidated all theming to use the regular ThemeContext.tsx:
+  - **Removed Separate Theme Context**: Deleted the entire `src/contexts/schema-builder-theme/` directory and all related files
+  - **Updated Schema Builder Components**: Modified all schema builder components to use the regular `useTheme` hook from `@/contexts/theme/ThemeContext`
+  - **Updated Theme Toggle**: Changed `SchemaBuilderThemeToggle` component to use the regular theme context instead of separate schema builder theme
+  - **Updated Providers**: Modified `SchemaCanvasProvider` to use `ThemeProvider` instead of `SchemaBuilderThemeProvider`
+  - **Updated Exports**: Removed schema-builder-theme exports from `src/index.ts` and kept only the regular theme context exports
+  - **Updated Documentation**: Cleaned up README.md and EmbeddableDashboard-Usage.md to remove references to SchemaBuilderThemeProvider
+  - **Maintained Functionality**: All theming functionality preserved while simplifying the architecture
+  - **Single Source of Truth**: Now using only one theme context for the entire VDT dashboard, eliminating complexity and reducing bundle size
+  - **Better Integration**: VDT dashboard theme now properly integrates with the host application's theme system
+
+- **Component Architecture Restructuring** (2024-01-03): Successfully broke down monolithic components into smaller, manageable pieces following proper architecture patterns:
+  - **VDT Dashboard Section Restructuring**: Moved the large VDTDashboard component from `src/components/vdt-dashboard.tsx` into `src/sections/vdt-dashboard/` with proper separation:
+    - **Types**: Extracted all interfaces and types into `types.ts` with clear type definitions
+    - **Auth Context**: Separated authentication logic into `auth-context.tsx` with provider and hooks
+    - **Reusable Components**: Moved `LoadingSpinner` and `ErrorFallback` to `@/components` since they can be used across the app
+    - **View Components**: Created individual view components (`HomeView`, `DashboardMainView`, `SchemaBuilderView`, `DemoView`, `LoginView`, `SignUpView`, `NotFoundView`) in `views/` folder
+    - **Feature Components**: Created specialized components (`DashboardNavigation`, `DashboardContent`, `ProtectedView`) in `components/` folder
+    - **Main Component**: Clean `VDTDashboard.tsx` that orchestrates all the smaller components
+    - **Index Exports**: Comprehensive `index.ts` with all exports for both basic and advanced usage
+  - **Schema Builder Section Restructuring**: Broke down `StandaloneSchemaCanvas` into modular components in `src/sections/schema-builder/`:
+    - **Provider Component**: Created `SchemaCanvasProvider` to wrap all necessary contexts (theme, drag-drop) 
+    - **Container Component**: Created `SchemaCanvasContainer` for main canvas interactions (click, drag, pan, table rendering)
+    - **Main Component**: Refactored `SchemaCanvas` to orchestrate toolbar, dialogs, and canvas container
+    - **Types**: Moved all schema-related interfaces to `types.ts`
+    - **Updated StandaloneSchemaCanvas**: Now uses the new modular architecture with proper provider wrapping
+  - **Import Path Updates**: Updated all import references to use the new section-based structure
+  - **Component Index Updates**: Updated `src/components/index.ts` and `src/index.ts` to export from the new sections
+  - **Maintained Functionality**: All existing functionality preserved while improving maintainability and modularity
+  - **Clean Architecture**: Each component now has a single responsibility and clear boundaries
+  - **Better Testability**: Smaller components are easier to test and maintain
+
+- **Critical Clerk Provider Fix** (2024-06-06): Fixed the Clerk authentication error that occurred when using the VDTDashboard without a Clerk key:
+  - **Problem**: The InternalAuthProvider was calling useClerkAuth() even when no ClerkProvider was present
+  - **Solution**: Made Clerk hook usage conditional based on hasClerkProvider prop
+  - **Result**: VDTDashboard now works perfectly with and without Clerk authentication
+  - **Published**: Version 1.1.2 with the fix is now live on npm
+
+- **Complete Library Restructuring and Web Component Creation** (2024-06-06): Successfully transformed the project into a clean, publishable library focused on the VDTDashboard web component:
+  - **Project Restructuring**: Removed app-specific files (pages/, layouts/, router.tsx, App.tsx, main.tsx, index.html) while preserving all reusable library components
+  - **Enhanced Demo Experience**: Completely redesigned the DemoView with interactive schema canvas, live data display, usage examples, and working sample schemas
+  - **Sample Data Library**: Created comprehensive sample data (sampleTables, sampleForeignKeys, simpleSampleTables, simpleSampleForeignKeys) for demos and testing
+  - **Comprehensive Export Structure**: Updated src/index.ts to export all necessary components, types, hooks, and utilities:
+    - Primary: VDTDashboard (main web component)
+    - Advanced: StandaloneSchemaCanvas, SchemaCanvas
+    - Types: Table, ForeignKey, Column, SQLDataType
+    - Contexts: ThemeProvider and its consumers
+    - Hooks: useTheme
+    - Sample data for testing and demos
+  - **TypeScript Declaration Generation**: Fixed build process to generate proper .d.ts files with tsconfig.lib.json and updated build scripts
+  - **Library-Focused Build System**: Optimized Vite configuration for library builds with proper external dependencies and CSS handling
+  - **Updated Documentation**: Completely revised EmbeddableDashboard-Usage.md to reflect new VDTDashboard component with:
+    - Installation instructions via yarn/npm
+    - Comprehensive API documentation with all props
+    - Authentication setup guide for Clerk integration
+    - Advanced usage examples for all exported components
+    - Integration examples for different use cases
+    - TypeScript usage examples
+  - **Ready for Publishing**: Library now builds successfully with all TypeScript declarations and is ready for npm publishing
+  - **Backward Compatibility**: All existing functionality preserved while making it properly embeddable in any React application
+
+## Recently Completed ✅
+
+- **Self-Contained VDT Dashboard with Full Provider Integration** (2024-01-02): Successfully refactored the VDT Dashboard component to be completely self-contained with all authentication, theming, routing, and error handling:
+  - **Complete Provider Integration**: Moved all providers (ClerkProvider, AuthProvider, ThemeProvider) from RootLayout.tsx into the VDTDashboard component itself
+  - **Internal Authentication System**: Created InternalAuthProvider and useInternalAuth hook for isolated authentication management within the dashboard
+  - **Internal Routing System**: Implemented dashboard-specific routing with views: home, dashboard, schema-builder, demo, login, signup, not-found
+  - **Navigation Component**: Added DashboardNavigation with contextual navigation based on authentication status
+  - **Authentication Views**: Built LoginView and SignUpView components with Clerk integration using modal-based sign-in/sign-up
+  - **Protected Route Logic**: Implemented ProtectedView wrapper that handles authentication checks and fallbacks
+  - **Error Handling**: Added ErrorFallback component with error boundary functionality and recovery options
+  - **Loading States**: Comprehensive loading spinners for authentication checks and view transitions
+  - **404 Handling**: NotFoundView component for handling invalid routes within the dashboard
+  - **Home View**: Welcome screen with sign-in/sign-up options and unauthenticated exploration features
+  - **Optional Authentication**: Added `requireAuthForSchemaBuilder` prop to make authentication optional for schema builder access
+  - **Clerk Key Management**: Optional `clerkPublishableKey` prop - dashboard works without authentication if not provided
+  - **Complete Isolation**: Dashboard now works as a true library component without requiring any external setup from host applications
+  - **Enhanced Props Interface**: Added new props for controlling authentication, navigation, initial views, and error handling
+  - **Backward Compatibility**: All existing functionality preserved while adding new self-contained features
+
+- **Self-Contained Embeddable Components**: Created truly embeddable components that solve external dependency issues:
+  - **Problem Solved**: The original EmbeddableDashboard component required external contexts (DragDropProvider, ThemeProvider, stores) that weren't available when embedded in other projects
+  - **EmbeddableVDTDashboard**: New self-contained dashboard component that includes all necessary providers internally - can be used in any React app without setup
+  - **StandaloneSchemaCanvas**: Self-contained schema canvas that wraps all required contexts - perfect for inline embedding without modal
+  - **Complete Isolation**: Components manage their own state, themes, and dependencies without affecting the host application
+  - **Comprehensive Documentation**: Created EMBEDDABLE_GUIDE.md with complete API reference, integration examples, styling guides, and troubleshooting
+  - **Library Export Structure**: Updated exports to prioritize the new self-contained components while keeping legacy components for advanced users
+  - **Build Verification**: Confirmed library builds successfully and components work without external dependencies
+  - **Integration Examples**: Provided examples for React Router, state management, forms, and various use cases
+  - **TypeScript Support**: Full type definitions for all new components and their props
+  - **Theme Isolation**: Schema builder themes are completely isolated and don't affect the host application's theme
 
 - **NPM Library Publishing Setup**: Configured the project for publishing as an npm library:
   - **Package Configuration**: Updated package.json with proper library metadata, entry points, and peer dependencies
@@ -142,14 +236,12 @@
   - **Route Protection**: SchemaBuilder now requires authentication; redirects to login if not authenticated
   - **Seamless UX**: App component redirects authenticated users to schema builder, shows auth options for guests
   - **Shadcn Components**: Added dropdown-menu and avatar components from shadcn for consistent UI
-- **Schema Builder Theme System**: Implemented isolated theme management for the SchemaCanvas component with:
-  - **useSchemaBuilderTheme Hook**: Custom context for theme management independent of global app theme
-  - **SchemaBuilderThemeProvider**: Isolated theme provider with localStorage persistence and system preference detection
-  - **SchemaBuilderThemeToggle**: Dedicated theme toggle button for the schema builder
-  - **Local Theme Application**: Theme classes applied only to the canvas container, not globally
-  - **Reduced Dark Theme Contrast**: Enhanced dark theme with softer colors for better eye comfort
+- **Schema Builder Theme System**: Implemented unified theme management for the SchemaCanvas component using the regular theme context:
+  - **Unified Theme Context**: Now uses the same theme context as the rest of the application for consistency
+  - **SchemaBuilderThemeToggle**: Theme toggle button that controls the global application theme
+  - **Simplified Architecture**: Removed the separate schema builder theme context to reduce complexity
   - **Props Interface**: Added `initialTheme` prop for external theme control
-  - **Backward Compatibility**: Existing SchemaCanvas usage continues to work without changes
+  - **Backward Compatibility**: All theming functionality preserved while simplifying the system
 
 - **Enhanced ConnectionLine Component**: Implemented smaller arrows (6x4px vs 10x7px), positioned connection points outside table boundaries (20px offset), added click selection with visual feedback (darker blue, thicker stroke), hover effects, invisible click area for better UX, and delete button functionality when connection is selected.
 

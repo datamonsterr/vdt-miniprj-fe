@@ -1,7 +1,7 @@
-import React from 'react'
+
 import { Moon, Sun } from 'lucide-react'
 import { Button } from './button'
-import { useSchemaBuilderTheme } from '@/contexts/schema-builder-theme'
+import { useTheme } from '@/contexts/theme/ThemeContext'
 
 interface SchemaBuilderThemeToggleProps {
   size?: 'sm' | 'default' | 'lg'
@@ -14,7 +14,7 @@ export function SchemaBuilderThemeToggle({
   variant = 'outline',
   className = ''
 }: SchemaBuilderThemeToggleProps) {
-  const { theme, toggleTheme } = useSchemaBuilderTheme()
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <Button
@@ -29,7 +29,7 @@ export function SchemaBuilderThemeToggle({
       ) : (
         <Sun className="h-4 w-4" />
       )}
-      <span className="sr-only">Toggle schema builder theme</span>
+      <span className="sr-only">Toggle theme</span>
     </Button>
   )
 } 

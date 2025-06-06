@@ -1,5 +1,5 @@
+import type { UniqueIdentifier } from '@dnd-kit/core'
 import { createContext, useContext } from 'react'
-import type { Active, Over, UniqueIdentifier } from '@dnd-kit/core'
 
 export interface DragDropContextType {
   activeId: UniqueIdentifier | null

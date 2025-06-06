@@ -35,6 +35,9 @@ export default defineConfig(({ mode }) => {
           }
         },
         cssCodeSplit: false
+      },
+      define: {
+        'process.env.NODE_ENV': '"production"'
       }
     })
   }

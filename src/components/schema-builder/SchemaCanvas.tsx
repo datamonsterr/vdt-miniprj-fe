@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { SchemaBuilderThemeToggle } from '@/components/ui/schema-builder-theme-toggle'
-import { SchemaBuilderThemeProvider, useSchemaBuilderTheme } from '@/contexts/schema-builder-theme'
+import { ThemeProvider, useTheme } from '@/contexts/theme'
 import { UserSettings } from '@/components/auth/UserSettings'
 import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { useSchemaStore } from '@/stores/schema-store'
@@ -95,7 +95,7 @@ function SchemaCanvasInternal({
   className = '',
   style = {},
 }: Omit<SchemaCanvasProps, 'initialTheme'>) {
-  const { theme } = useSchemaBuilderTheme()
+  const { theme } = useTheme()
   // Use Zustand store
   const {
     tables,
@@ -479,8 +479,8 @@ export function SchemaCanvas(props: SchemaCanvasProps) {
   const { initialTheme, ...restProps } = props
   
   return (
-    <SchemaBuilderThemeProvider initialTheme={initialTheme}>
+    <ThemeProvider defaultTheme={initialTheme}>
       <SchemaCanvasInternal {...restProps} />
-    </SchemaBuilderThemeProvider>
+    </ThemeProvider>
   )
 } 

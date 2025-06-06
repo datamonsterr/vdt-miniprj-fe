@@ -1,8 +1,8 @@
-import { create } from 'zustand'
-import { temporal } from 'zundo'
-import type { Table, ForeignKey, SchemaBuilderState } from '@/types/database'
+import type { ForeignKey, SchemaBuilderState, Table } from '@/types/database'
 import { ToolType } from '@/types/database'
 import type { UniqueIdentifier } from '@dnd-kit/core'
+import { temporal } from 'zundo'
+import { create } from 'zustand'
 
 // Define the main schema store state
 interface SchemaStoreState {
@@ -30,7 +30,7 @@ interface SchemaStoreState {
 // Create the store with temporal (undo/redo) middleware
 export const useSchemaStore = create<SchemaStoreState>()(
   temporal(
-    (set, get) => ({
+    (set, _get) => ({
       // Initial state
       tables: [],
       foreignKeys: [],
@@ -99,7 +99,7 @@ export const useSchemaStore = create<SchemaStoreState>()(
       },
       
       // Callback when state is saved to history
-      onSave: (pastState, currentState) => {
+      onSave: (_pastState, _currentState) => {
         console.log('Schema state saved to history')
       },
     }

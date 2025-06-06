@@ -1,24 +1,25 @@
-// Main library entry point
-export { EmbeddableDashboard } from './components/EmbeddableDashboard'
-export type { EmbeddableDashboardProps } from './components/EmbeddableDashboard'
+// Main web component export - this is the primary export for the library
+export { VDTDashboard } from './sections/vdt-dashboard'
+export type { VDTDashboardProps } from './sections/vdt-dashboard'
 
 // Advanced components for power users
+export { StandaloneSchemaCanvas } from './sections/schema-builder'
+
+// Schema Builder components (for users who want to integrate more deeply)
 export { SchemaCanvas } from './components/schema-builder/SchemaCanvas'
-export type { SchemaCanvasProps } from './components/schema-builder/SchemaCanvas'
 
-// Core types that consumers might need
-export type { Table, Column, ForeignKey, SQLDataType } from './types/database'
+// Types that consumers might need
+export type { Table, ForeignKey, Column } from './types/database'
+export { SQLDataType } from './types/database'
 
-// UI components that might be useful
-export { Button } from './components/ui/button'
-export { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card'
-export { Dialog, DialogContent, DialogHeader, DialogTitle } from './components/ui/dialog'
+// Context providers (for advanced integration scenarios)
+export { ThemeProvider, ThemeConsumer } from './contexts/theme'
 
-// Theme providers for advanced integration
-export { SchemaBuilderThemeProvider, useSchemaBuilderTheme } from './contexts/schema-builder-theme'
+// Hooks for advanced users
+export { useTheme } from './contexts/theme'
 
-// Utility functions
-export { cn } from './lib/utils'
+// Sample data for demos and testing
+export { sampleTables, sampleForeignKeys, simpleSampleTables, simpleSampleForeignKeys } from './mocks/sampleData'
 
-// Import styles
+// CSS import for consumers - this ensures Tailwind styles are included
 import './index.css' 
