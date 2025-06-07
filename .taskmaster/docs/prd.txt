@@ -1,0 +1,162 @@
+# VDT Phase 1 Mini Project - Database Schema Builder Web Component
+
+## Project Overview
+This project is a web component library that provides an embeddable database schema builder dashboard. The main goal is to create reusable components that can be embedded in other web applications as a library, with a primary focus on a drag-and-drop interface for creating database schemas.
+
+## Key Features
+1. **Embeddable Dashboard Component** - A self-contained web component that can be used in other React applications
+2. **Schema Builder** - Interactive drag-and-drop interface for creating database schemas
+3. **Authentication System** - Clerk SSO integration with optional authentication
+4. **Theming Support** - Light/dark theme toggle with isolation from host applications
+5. **Export/Import** - Database schema export/import functionality
+6. **Undo/Redo System** - Full undo/redo support with keyboard shortcuts
+
+## Technical Requirements
+
+### Architecture
+- React 19 with TypeScript
+- TailwindCSS v4 for styling
+- Shadcn/ui component library
+- React Router for navigation
+- Clerk for authentication
+- Zustand + Zundo for state management with undo/redo
+- Vite for build tools
+- Vitest for testing
+- Storybook for component documentation
+- @dnd-kit for drag and drop functionality
+
+### Component Structure
+- `src/components` - UI components and shadcn components
+- `src/sections` - Main content sections with their own components and types
+- `src/contexts` - React contexts (Auth, Theme, DragDrop)
+- `src/hooks` - Custom React hooks
+- `src/types` - TypeScript type definitions
+- `src/stores` - Zustand stores for state management
+- `src/stories` - Storybook component stories
+
+## Core Components
+
+### Authentication & Context Setup (4 hours)
+- Auth context with Clerk integration (AuthContext.tsx, AuthProvider.tsx, AuthConsumer.tsx)
+- Authentication hook for managing user state
+- Protected route wrapper component
+- Sign-in/sign-out UI components using shadcn
+
+### Core Types & Models (3 hours)
+- Database schema types (Table, Column, DataType, Relationship)
+- SQL data types (VARCHAR, INT, BOOLEAN, etc.)
+- Drag and drop interface types (ToolType, SchemaBuilderState)
+
+### UI Components Library (8 hours)
+- Shadcn components: card, input, select, dialog, dropdown-menu
+- Reusable Modal component for forms
+- DragHandle component for draggable elements
+- ConfirmationDialog component
+- Toast notification system
+- Loading spinner and skeleton components
+- ResizablePanel component for layout adjustments
+- ContextMenu component for right-click actions
+
+### Database Builder Components (12 hours)
+- Table component with drag/drop functionality
+- Column component with data type selection
+- DataTypeSelector dropdown with SQL types
+- ColumnDialog for editing column details
+- TableCreationDialog for new table wizard
+- DatabaseCanvas as main workspace container with grid pattern
+- Toolbar with toggle tools (Select, Table, Column, Connection)
+- ConnectionLine with selection/deletion functionality
+- TablePropertiesPanel for table configuration
+- RelationshipConnector for linking tables
+- DatabaseToolbar with save/load/export actions
+- TableList sidebar for navigation
+- ValidationMessages component for error display
+
+### Drag & Drop System (6 hours)
+- @dnd-kit packages configuration (core, sortable, utilities)
+- DragProvider context for drag state management
+- useDragAndDrop hook for drag logic
+- Drag preview components (Draggable, Droppable, SortableItem)
+- Drop zones for tables and columns
+- Drag validation and constraints
+
+### Database Logic & State Management (8 hours)
+- Connection management system (create, select, delete foreign keys)
+- Undo/Redo functionality with Zustand + Zundo and keyboard shortcuts
+- DatabaseContext for managing database state
+- useDatabaseActions hook for CRUD operations
+- Table creation/deletion logic
+- Column add/remove/edit functionality
+- Database validation rules
+- Database serialization/deserialization logic
+
+### Main Views & Pages (6 hours)
+- SchemaBuilder main page component
+- Complete schema builder interface with tools and canvas
+- Routing for schema builder views
+- Dashboard page for authenticated users
+- DatabaseListPage for managing multiple databases
+- DatabasePreviewPage for viewing created schemas
+
+### Integration & Export Features (4 hours)
+- Database schema export functionality (SQL, JSON)
+- Schema import from JSON
+- Schema preview with formatted output
+- Shareable database links
+
+### Web Component Integration (3 hours)
+- EmbeddableDashboard component for other apps
+- Self-contained embeddable components that work without external dependencies
+- Iframe communication system for embedding
+- Web component build configuration
+- NPM package setup for distribution
+
+### Testing & Quality (4 hours)
+- Unit tests for core database logic
+- Integration tests for drag & drop
+- Tests for authentication flow
+- E2E tests for main user journey
+
+### Documentation & Polish (5 hours)
+- Comprehensive embeddable components documentation
+- Storybook setup with component testing and documentation
+- TypeScript documentation comments
+- Usage examples for web component integration
+- Deployment documentation
+
+### Performance & Optimization (2 hours)
+- Lazy loading for heavy components
+- Optimize re-renders with React.memo
+- Virtual scrolling for large table lists
+
+### Error Handling & UX (3 hours)
+- Comprehensive error boundaries
+- User-friendly error messages
+- Form validation with helpful feedback
+- Auto-save functionality
+
+## Success Criteria
+1. **Library Ready** - Components can be installed via npm and used in any React application
+2. **Full Functionality** - Complete schema builder with all planned features working
+3. **Documentation** - Comprehensive documentation and Storybook stories
+4. **Testing** - All core functionality covered by tests
+5. **Performance** - Smooth interactions and optimized bundle size
+
+## Timeline
+Total estimated time: 65 hours
+
+## Priority Levels
+1. **High Priority**: Authentication, Core Types, Database Builder Components, State Management
+2. **Medium Priority**: UI Components, Drag & Drop, Main Views, Web Component Integration
+3. **Low Priority**: Testing, Documentation, Performance, Error Handling
+
+## Recent Accomplishments
+- Initial setup with React Router, TailwindCSS, and shadcn completed
+- Authentication system with Clerk integration implemented
+- Core database types and schema builder components created
+- Drag and drop functionality with @dnd-kit implemented
+- Undo/redo system with Zustand + Zundo completed
+- Theme context and component integration finished
+- Storybook setup for component testing and documentation completed
+- Self-contained embeddable components created
+- NPM library publishing setup configured 

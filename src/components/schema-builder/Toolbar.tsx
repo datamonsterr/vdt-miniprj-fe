@@ -1,14 +1,16 @@
-import { MousePointer, Table2, Plus, Link, Hand } from 'lucide-react'
+import { MousePointer, Table2, Plus, Link, Hand, Download } from 'lucide-react'
 import { Toggle } from '@/components/ui/toggle'
 import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { ToolType } from '@/types/database'
 
 interface ToolbarProps {
   selectedTool: ToolType
   onToolChange: (tool: ToolType) => void
+  onExport?: () => void
 }
 
-export function Toolbar({ selectedTool, onToolChange }: ToolbarProps) {
+export function Toolbar({ selectedTool, onToolChange, onExport }: ToolbarProps) {
   const tools = [
     {
       type: ToolType.SELECT,
@@ -66,6 +68,21 @@ export function Toolbar({ selectedTool, onToolChange }: ToolbarProps) {
             )
           })}
         </div>
+        
+        {/* Export Button */}
+        {onExport && (
+          <div className="mt-4 pt-4 border-t border-border">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onExport}
+              className="w-full justify-start gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Export Schema
+            </Button>
+          </div>
+        )}
       </div>
     </Card>
   )

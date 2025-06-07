@@ -41,14 +41,14 @@ export function Draggable({
       ref={setNodeRef}
       style={style}
       className={cn(
-        'touch-none select-none',
+        disabled ? '' : 'touch-none select-none',
         isDragging && 'opacity-50',
-        disabled && 'cursor-not-allowed opacity-50',
+        disabled && 'cursor-default',
         !disabled && 'cursor-grab active:cursor-grabbing',
         className
       )}
-      {...listeners}
-      {...attributes}
+      {...(disabled ? {} : listeners)}
+      {...(disabled ? {} : attributes)}
     >
       {children}
     </div>

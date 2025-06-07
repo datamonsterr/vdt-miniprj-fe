@@ -148,6 +148,12 @@ export function ConnectionLine({ foreignKey, tables, onDeleteConnection }: Conne
 
   if (!sourcePoint || !targetPoint) return null
 
+  // Get source and target table/column names for confirmation dialog
+  const sourceTable = tables.find(t => t.id === foreignKey.sourceTableId)
+  const targetTable = tables.find(t => t.id === foreignKey.targetTableId)
+  const sourceColumn = sourceTable?.columns.find(c => c.id === foreignKey.sourceColumnId)
+  const targetColumn = targetTable?.columns.find(c => c.id === foreignKey.targetColumnId)
+
   // Calculate 90-degree path with rounded corners
   const cornerRadius = 12
   const minOffset = 30 // Minimum distance before turning
@@ -294,18 +300,19 @@ export function ConnectionLine({ foreignKey, tables, onDeleteConnection }: Conne
     if (onDeleteConnection) {
       onDeleteConnection(foreignKey.id)
     }
+    setIsSelected(false)
   }
 
   return (
-    <g style={{ zIndex: Z_INDEX.CONNECTION_LINE }}>
+    <g style={{ zIndex: Z_INDEX.CONNECTION_LINE, pointerEvents: 'auto' }}>
       {/* Arrow head definition - smaller size */}
       <defs>
         <marker
           id={`arrowhead-${foreignKey.id}`}
-          markerWidth="6"
-          markerHeight="4"
-          refX="5"
-          refY="2"
+          markerWidth={6}
+          markerHeight={4}
+          refX={5}
+          refY={2}
           orient="auto"
           markerUnits="strokeWidth"
         >
@@ -368,7 +375,7 @@ export function ConnectionLine({ foreignKey, tables, onDeleteConnection }: Conne
         x={midPoint.x}
         y={midPoint.y - 10}
         textAnchor="middle"
-        fontSize="12"
+        fontSize={12}
         fill="#374151"
         className="font-medium pointer-events-none"
       >
@@ -380,8 +387,8 @@ export function ConnectionLine({ foreignKey, tables, onDeleteConnection }: Conne
         <foreignObject
           x={midPoint.x - 12}
           y={midPoint.y + 5}
-          width="24"
-          height="24"
+          width={24}
+          height={24}
         >
           <Button
             size="sm"
@@ -393,6 +400,7 @@ export function ConnectionLine({ foreignKey, tables, onDeleteConnection }: Conne
           </Button>
         </foreignObject>
       )}
+
     </g>
   )
 } 

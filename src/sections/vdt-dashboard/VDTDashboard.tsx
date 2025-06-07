@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { ErrorFallback } from '@/components/ErrorFallback'
-import { X } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { ClerkProvider } from '@clerk/clerk-react'
 import { ThemeProvider } from '@/contexts/theme'
 import { InternalAuthProvider, VDT_CLERK_PUBLISHABLE_KEY } from './auth-context'
@@ -17,13 +16,14 @@ import type { Table, ForeignKey } from '@/types/database'
  * 
  * This component provides:
  * - All necessary context providers (Clerk, theme, auth) internally
- * - A trigger button that opens a modal containing the full VDT dashboard
+ * - A trigger button that opens a full screen overlay containing the VDT dashboard
  * - Complete isolation from the host application's state management
  * - Authentication system with Clerk
  * - Schema builder with drag-and-drop functionality
  * - Undo/redo capabilities
  * - Theme management (light/dark) isolated to the dashboard
- * - Routing and navigation within the modal
+ * - Routing and navigation within the full screen view
+ * - Back button to return to the original view
  * - 404 error handling
  * - Loading states and error boundaries
  * 
@@ -50,7 +50,7 @@ export function VDTDashboard({
   initialTheme = "light",
   initialTables = [],
   initialForeignKeys = [],
-  requireAuthForSchemaBuilder = true,
+  requireAuthForSchemaBuilder = false,
   initialView = "home",
   showNavigation = true
 }: VDTDashboardProps) {
@@ -66,15 +66,9 @@ export function VDTDashboard({
     }
   }, [isOpen, initialView])
 
-  const getModalClassName = () => {
-    switch (modalSize) {
-      case 'sm': return 'max-w-md'
-      case 'md': return 'max-w-2xl'
-      case 'lg': return 'max-w-4xl'
-      case 'xl': return 'max-w-6xl'
-      case 'full': return 'max-w-[95vw] h-[95vh]'
-      default: return 'max-w-4xl'
-    }
+  // Full screen overlay - modalSize is no longer needed
+  const handleClose = () => {
+    setIsOpen(false)
   }
 
   const handleNavigate = (view: DashboardView) => {
@@ -97,17 +91,27 @@ export function VDTDashboard({
     )
   }
 
-  // Always use authentication with our Clerk key
-  const effectiveRequireAuth = requireAuthForSchemaBuilder
-
   const renderContent = () => {
     try {
       return (
         <div className="flex flex-col h-full">
+          {/* Back button - always show when in full screen mode */}
+          <div className="flex items-center p-4 border-b bg-background">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
+          </div>
+          
           {showNavigation && (
             <DashboardNavigation 
               currentView={currentView} 
-              onNavigate={handleNavigate} 
+              onNavigate={handleNavigate}
             />
           )}
           <div className="flex-1 overflow-auto">
@@ -120,21 +124,9 @@ export function VDTDashboard({
               initialTheme={initialTheme}
               initialTables={initialTables}
               initialForeignKeys={initialForeignKeys}
-              requireAuthForSchemaBuilder={effectiveRequireAuth}
+              requireAuthForSchemaBuilder={requireAuthForSchemaBuilder}
             />
           </div>
-          {!showNavigation && (
-            <div className="absolute top-4 right-4 z-50">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsOpen(false)}
-                className="h-8 w-8"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
         </div>
       )
     } catch (err) {
@@ -155,20 +147,20 @@ export function VDTDashboard({
 
   return (
     <>
-      <Button
-        variant={buttonVariant}
-        size={buttonSize}
-        className={buttonClassName}
-        onClick={() => setIsOpen(true)}
-      >
-        {buttonText}
-      </Button>
-
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className={`${getModalClassName()} p-0`} showCloseButton={false}>
+      {!isOpen ? (
+        <Button
+          variant={buttonVariant}
+          size={buttonSize}
+          className={buttonClassName}
+          onClick={() => setIsOpen(true)}
+        >
+          {buttonText}
+        </Button>
+      ) : (
+        <div className="fixed inset-0 z-50 bg-background h-screen w-screen">
           <DashboardWithProviders />
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
     </>
   )
 } 

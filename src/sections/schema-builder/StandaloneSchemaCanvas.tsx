@@ -34,8 +34,8 @@ export function StandaloneSchemaCanvas({
 }: StandaloneSchemaCanvasProps) {
   return (
     <div 
-      className={`vdt-standalone-schema-canvas ${wrapperClassName}`} 
-      style={wrapperStyle}
+      className={`vdt-standalone-schema-canvas h-full w-full ${wrapperClassName}`} 
+      style={{ minHeight: '500px', ...wrapperStyle }}
     >
       <SchemaCanvasProvider initialTheme={initialTheme}>
         <SchemaCanvas {...schemaCanvasProps} />

@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { SchemaBuilderThemeToggle } from '@/components/ui/schema-builder-theme-toggle'
 import { useUndoRedo } from '@/hooks/useUndoRedo'
 import { useSchemaStore } from '@/stores/schema-store'
-import { ToolType } from '@/types/database'
+import { ToolType, SQLDataType } from '@/types/database'
 import { useEffect, useState } from 'react'
 import type { SchemaCanvasProps } from '../types'
 import { SchemaCanvasContainer } from './SchemaCanvasContainer'
@@ -41,6 +41,7 @@ export function SchemaCanvas({
   initialTables = [],
   initialForeignKeys = [],
   onSchemaChange,
+  onExport,
   showToolbar = true,
   showUndoRedo = true,
   showThemeToggle = true,
@@ -48,16 +49,14 @@ export function SchemaCanvas({
   className = '',
   style = {},
 }: Omit<SchemaCanvasProps, 'initialTheme'>) {
-  // Use Zustand store
-  const {
-    tables,
-    foreignKeys,
-    uiState,
-    addTable,
-    setUIState,
-    setTables,
-    setForeignKeys,
-  } = useSchemaStore()
+  // Use explicit selectors for better reactivity with temporal middleware
+  const tables = useSchemaStore(state => state.tables)
+  const foreignKeys = useSchemaStore(state => state.foreignKeys)
+  const uiState = useSchemaStore(state => state.uiState)
+  const addTable = useSchemaStore(state => state.addTable)
+  const setUIState = useSchemaStore(state => state.setUIState)
+  const setTables = useSchemaStore(state => state.setTables)
+  const setForeignKeys = useSchemaStore(state => state.setForeignKeys)
 
   // Set up undo/redo with keyboard shortcuts
   useUndoRedo()
@@ -107,7 +106,16 @@ export function SchemaCanvas({
       const newTable = {
         id: `table_${Date.now()}`,
         name: newTableName.trim(),
-        columns: [],
+        columns: [
+          {
+            id: `col_${Date.now()}`,
+            name: 'id',
+            dataType: SQLDataType.INT,
+            nullable: false,
+            primaryKey: true,
+            autoIncrement: true,
+          }
+        ],
         position: { x: 100, y: 100 }, // Default position
       }
       addTable(newTable)
@@ -123,6 +131,28 @@ export function SchemaCanvas({
     setIsTableDialogOpen(true)
   }
 
+  const handleExport = () => {
+    // Create export data
+    const exportData = {
+      tables,
+      foreignKeys,
+      exportedAt: new Date().toISOString(),
+      version: '1.0'
+    }
+    
+    // Create and download JSON file
+    const dataStr = JSON.stringify(exportData, null, 2)
+    const dataBlob = new Blob([dataStr], { type: 'application/json' })
+    const url = URL.createObjectURL(dataBlob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `database-schema-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className={`relative w-full h-full ${className}`} style={style}>
       {/* Toolbar */}
@@ -131,7 +161,11 @@ export function SchemaCanvas({
           className="absolute top-4 left-4 z-50"
           style={{ zIndex: Z_INDEX.TOOLBAR }}
         >
-          <Toolbar onToolChange={handleToolChange} selectedTool={uiState.selectedTool} />
+          <Toolbar 
+            onToolChange={handleToolChange} 
+            selectedTool={uiState.selectedTool}
+            onExport={onExport || handleExport}
+          />
         </div>
       )}
 

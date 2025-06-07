@@ -4,7 +4,7 @@ import { TableComponent } from './TableComponent'
 import { ConnectionLine } from './ConnectionLine'
 import { Toolbar } from './Toolbar'
 import { UndoRedoToolbar } from './UndoRedoToolbar'
-import type { Table, ForeignKey } from '@/types/database'
+import type { Table, ForeignKey, SchemaBuilderState } from '@/types/database'
 import { SQLDataType, ToolType } from '@/types/database'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -96,21 +96,28 @@ function SchemaCanvasInternal({
   style = {},
 }: Omit<SchemaCanvasProps, 'initialTheme'>) {
   const { theme } = useTheme()
-  // Use Zustand store
-  const {
-    tables,
-    foreignKeys,
-    uiState,
-    addTable,
-    updateTable,
-    deleteTable,
-    addForeignKey,
-    deleteForeignKey,
-    setSelectedTool,
-    setUIState,
-    setTables,
-    setForeignKeys,
-  } = useSchemaStore()
+  // Use explicit selectors for better reactivity with temporal middleware
+  const tables = useSchemaStore(state => state.tables)
+  const foreignKeys = useSchemaStore(state => state.foreignKeys)
+  const uiState = useSchemaStore(state => state.uiState) as SchemaBuilderState
+  
+  // Force subscription to store changes - this helps with temporal middleware reactivity
+  const tablesLength = useSchemaStore(state => state.tables.length)
+  const foreignKeysLength = useSchemaStore(state => state.foreignKeys.length)
+  
+  // Debug: Log when tables change
+  React.useEffect(() => {
+    console.log('🔄 SchemaCanvas tables updated:', tables.map(t => ({ id: t.id, name: t.name })))
+  }, [tables, tablesLength])
+  const addTable = useSchemaStore(state => state.addTable)
+  const updateTable = useSchemaStore(state => state.updateTable)
+  const deleteTable = useSchemaStore(state => state.deleteTable)
+  const addForeignKey = useSchemaStore(state => state.addForeignKey)
+  const deleteForeignKey = useSchemaStore(state => state.deleteForeignKey)
+  const setSelectedTool = useSchemaStore(state => state.setSelectedTool)
+  const setUIState = useSchemaStore(state => state.setUIState)
+  const setTables = useSchemaStore(state => state.setTables)
+  const setForeignKeys = useSchemaStore(state => state.setForeignKeys)
 
   // Set up undo/redo with keyboard shortcuts
   useUndoRedo()
@@ -118,6 +125,12 @@ function SchemaCanvasInternal({
   // Local state for UI only
   const [isTableDialogOpen, setIsTableDialogOpen] = useState(false)
   const [newTableName, setNewTableName] = useState('')
+  
+  // Force re-render trigger for debugging reactivity issues
+  const [, forceUpdate] = useState({})
+  const triggerRerender = React.useCallback(() => {
+    forceUpdate({})
+  }, [])
 
   // Track if component has been initialized to prevent infinite loops
   const [isInitialized, setIsInitialized] = React.useState(false)
@@ -147,6 +160,8 @@ function SchemaCanvasInternal({
       selectedTool: tool,
       isConnecting: false,
       connectionStart: null,
+      selectedTableId: null,
+      selectedColumnId: null,
     })
 
     // When table tool is selected, open table creation dialog
@@ -163,9 +178,11 @@ function SchemaCanvasInternal({
   }
 
   const handleCanvasMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only handle hand tool on canvas background
     if (uiState.selectedTool === ToolType.HAND && e.target === e.currentTarget) {
       setUIState({ isPanning: true })
       e.preventDefault()
+      e.stopPropagation()
     }
   }
 
@@ -180,18 +197,24 @@ function SchemaCanvasInternal({
           y: uiState.canvasOffset.y + deltaY
         }
       })
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
 
-  const handleCanvasMouseUp = () => {
+  const handleCanvasMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     if (uiState.isPanning) {
       setUIState({ isPanning: false })
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
 
-  const handleCanvasMouseLeave = () => {
+  const handleCanvasMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     if (uiState.isPanning) {
       setUIState({ isPanning: false })
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
 
@@ -247,8 +270,51 @@ function SchemaCanvasInternal({
     updateTable(updatedTable)
   }
 
-  const handleDeleteTable = (tableId: string) => {
-    deleteTable(tableId)
+    const handleDeleteTable = (tableId: UniqueIdentifier) => {
+    console.log('🗑️ handleDeleteTable called with ID:', tableId, 'type:', typeof tableId)
+    console.log('📋 Current tables before delete:', tables.map(t => ({ id: t.id, name: t.name, idType: typeof t.id })))
+    
+    // Convert to string for consistent comparison (matching store logic)
+    const tableIdStr = String(tableId)
+    console.log('🔍 Looking for table with string ID:', tableIdStr)
+    
+    // Check if table exists before attempting delete
+    const tableExists = tables.some(t => String(t.id) === tableIdStr)
+    console.log('✅ Table exists?', tableExists)
+    
+    if (!tableExists) {
+      console.error('❌ Table not found for deletion!', { tableId, tableIdStr, availableTables: tables.map(t => ({ id: t.id, stringId: String(t.id) })) })
+      return
+    }
+    
+    // Clear any selected states first to avoid stale references
+    setUIState({ 
+      selectedTableId: null,
+      selectedColumnId: null,
+      isConnecting: false,
+      connectionStart: null
+    })
+    
+    // Use direct table filtering and set - bypass potential temporal middleware issues
+    const filteredTables = tables.filter(t => String(t.id) !== tableIdStr)
+    const filteredForeignKeys = foreignKeys.filter(fk => 
+      String(fk.sourceTableId) !== tableIdStr && String(fk.targetTableId) !== tableIdStr
+    )
+    
+    console.log('🔄 Setting filtered tables directly:', filteredTables.map(t => ({ id: t.id, name: t.name })))
+    
+    // Set the filtered data directly to ensure UI reactivity
+    setTables(filteredTables)
+    setForeignKeys(filteredForeignKeys)
+    
+    // Also call the store delete for undo/redo tracking (but after direct update)
+    setTimeout(() => {
+      deleteTable(tableId)
+      console.log('🔄 Delete command sent to store for undo/redo tracking')
+    }, 50)
+    
+    // Force re-render for additional safety
+    triggerRerender()
   }
 
   const handleDeleteConnection = (foreignKeyId: UniqueIdentifier) => {
@@ -256,9 +322,12 @@ function SchemaCanvasInternal({
   }
 
   const handleColumnClick = (tableId: string, columnId: string) => {
+    console.log('Column clicked:', { tableId, columnId, selectedTool: uiState.selectedTool })
+    
     if (uiState.selectedTool === ToolType.CONNECTION) {
       if (!uiState.connectionStart) {
         // Start connection
+        console.log('Starting connection from:', { tableId, columnId })
         setUIState({
           isConnecting: true,
           connectionStart: { tableId, columnId },
@@ -267,6 +336,9 @@ function SchemaCanvasInternal({
         })
       } else {
         // Complete connection
+        console.log('Completing connection to:', { tableId, columnId })
+        console.log('Connection start:', uiState.connectionStart)
+        
         if (uiState.connectionStart.tableId !== tableId || uiState.connectionStart.columnId !== columnId) {
           const newForeignKey: ForeignKey = {
             id: `fk_${Date.now()}`,
@@ -277,8 +349,11 @@ function SchemaCanvasInternal({
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           }
+          
+          console.log('Creating foreign key:', newForeignKey)
           addForeignKey(newForeignKey)
         }
+        
         setUIState({
           isConnecting: false,
           connectionStart: null,
@@ -354,11 +429,10 @@ function SchemaCanvasInternal({
       )}
 
       {/* Main Canvas */}
-      <DragDropProvider onDragEnd={handleDragEnd}>
+      {uiState.selectedTool === ToolType.HAND ? (
+        // Hand tool mode - no drag drop provider
         <div
-          className={`w-full h-full bg-grid-pattern relative overflow-hidden schema-canvas ${
-            uiState.selectedTool === ToolType.HAND ? 'cursor-grab' : ''
-          } ${
+          className={`w-full h-full bg-grid-pattern relative overflow-hidden schema-canvas cursor-grab ${
             uiState.isPanning ? 'cursor-grabbing' : ''
           }`}
           onClick={handleCanvasClick}
@@ -374,10 +448,11 @@ function SchemaCanvasInternal({
         >
           {/* SVG overlay for connection lines */}
           <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
+            className="absolute inset-0 w-full h-full"
             style={{ 
               zIndex: Z_INDEX.CONTENT,
-              transform: `translate(${uiState.canvasOffset.x}px, ${uiState.canvasOffset.y}px)`
+              transform: `translate(${uiState.canvasOffset.x}px, ${uiState.canvasOffset.y}px)`,
+              pointerEvents: 'none'
             }}
           >
             {foreignKeys.map((foreignKey) => (
@@ -425,11 +500,92 @@ function SchemaCanvasInternal({
                     : undefined
                 }
                 isConnectionMode={uiState.selectedTool === ToolType.CONNECTION}
+                isDraggable={false}
               />
             ))}
           </div>
         </div>
-      </DragDropProvider>
+      ) : (
+        // Regular mode with drag drop provider
+        <DragDropProvider onDragEnd={handleDragEnd}>
+          <div
+            className={`w-full h-full bg-grid-pattern relative overflow-hidden schema-canvas ${
+              (uiState.selectedTool as ToolType) === ToolType.HAND ? 'cursor-grab' : ''
+            } ${
+              uiState.isPanning ? 'cursor-grabbing' : ''
+            }`}
+            onClick={handleCanvasClick}
+            onMouseDown={handleCanvasMouseDown}
+            onMouseMove={handleCanvasMouseMove}
+            onMouseUp={handleCanvasMouseUp}
+            onMouseLeave={handleCanvasMouseLeave}
+            style={{
+              backgroundImage: `radial-gradient(circle, #e5e7eb 1px, transparent 1px)`,
+              backgroundSize: '20px 20px',
+              backgroundPosition: `${uiState.canvasOffset.x}px ${uiState.canvasOffset.y}px`,
+            }}
+          >
+            {/* SVG overlay for connection lines */}
+            <svg
+              className="absolute inset-0 w-full h-full"
+              style={{ 
+                zIndex: Z_INDEX.CONTENT,
+                transform: `translate(${uiState.canvasOffset.x}px, ${uiState.canvasOffset.y}px)`,
+                pointerEvents: 'none'
+              }}
+            >
+              {foreignKeys.map((foreignKey) => (
+                <ConnectionLine
+                  key={foreignKey.id}
+                  foreignKey={foreignKey}
+                  tables={tables}
+                  onDeleteConnection={handleDeleteConnection}
+                />
+              ))}
+            </svg>
+
+            {/* Instructions */}
+            {tables.length === 0 && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center text-muted-foreground">
+                  <h2 className="text-xl font-semibold mb-2">Welcome to Schema Builder</h2>
+                  <p className="text-sm">Select the Table tool and click to add your first table</p>
+                  <p className="text-xs mt-2 text-muted-foreground">
+                    Use <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Ctrl+Z</kbd> to undo and{' '}
+                    <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Ctrl+Shift+Z</kbd> to redo
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Render tables */}
+            <div 
+              style={{ 
+                position: 'relative', 
+                zIndex: Z_INDEX.TABLE,
+                transform: `translate(${uiState.canvasOffset.x}px, ${uiState.canvasOffset.y}px)`
+              }}
+            >
+              {tables.map((table) => (
+                <TableComponent
+                  key={table.id}
+                  table={table}
+                  onUpdateTable={handleUpdateTable}
+                  onDeleteTable={handleDeleteTable}
+                  onColumnClick={handleColumnClick}
+                  selectedColumnId={
+                    uiState.selectedTableId === table.id.toString()
+                      ? uiState.selectedColumnId?.toString() || undefined
+                      : undefined
+                  }
+                  isConnectionMode={uiState.selectedTool === ToolType.CONNECTION}
+                  isDraggable={uiState.selectedTool !== ToolType.HAND}
+                />
+              ))}
+            </div>
+          </div>
+        </DragDropProvider>
+      )}
 
       {/* Table creation dialog */}
       <Dialog open={isTableDialogOpen} onOpenChange={setIsTableDialogOpen}>

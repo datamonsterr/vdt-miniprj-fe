@@ -14,6 +14,10 @@ export interface SchemaCanvasProps {
    */
   onSchemaChange?: (data: { tables: Table[]; foreignKeys: ForeignKey[] }) => void
   /**
+   * Callback when export button is clicked
+   */
+  onExport?: () => void
+  /**
    * Whether to show the toolbar (default: true)
    */
   showToolbar?: boolean

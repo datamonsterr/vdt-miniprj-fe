@@ -6,10 +6,10 @@ import type { DashboardView } from '../types'
 
 export function DashboardNavigation({ 
   currentView, 
-  onNavigate 
+  onNavigate
 }: { 
   currentView: DashboardView
-  onNavigate: (view: DashboardView) => void 
+  onNavigate: (view: DashboardView) => void
 }) {
   const { isSignedIn } = useInternalAuth()
 

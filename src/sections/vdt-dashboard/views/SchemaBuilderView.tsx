@@ -1,5 +1,6 @@
 import { StandaloneSchemaCanvas } from '@/sections/schema-builder'
 import { ProtectedView } from '../components/ProtectedView'
+import { sampleTables, sampleForeignKeys } from '@/mocks/sampleData'
 import type { Table, ForeignKey } from '@/types/database'
 import type { DashboardView } from '../types'
 
@@ -8,7 +9,7 @@ export function SchemaBuilderView({
   initialTheme, 
   initialTables, 
   initialForeignKeys,
-  requireAuth = true 
+  requireAuth = false 
 }: {
   onNavigate: (view: DashboardView) => void
   onSchemaChange?: (data: { tables: Table[]; foreignKeys: ForeignKey[] }) => void
@@ -18,7 +19,7 @@ export function SchemaBuilderView({
   requireAuth?: boolean
 }) {
   const content = (
-    <div className="relative h-full">
+    <div className="relative h-full w-full min-h-[600px]">
       <StandaloneSchemaCanvas 
         onSchemaChange={onSchemaChange}
         showToolbar={true}
@@ -26,8 +27,8 @@ export function SchemaBuilderView({
         showUserSettings={false}
         showThemeToggle={true}
         initialTheme={initialTheme}
-        initialTables={initialTables}
-        initialForeignKeys={initialForeignKeys}
+        initialTables={initialTables.length > 0 ? initialTables : sampleTables}
+        initialForeignKeys={initialForeignKeys.length > 0 ? initialForeignKeys : sampleForeignKeys}
         className="h-full"
       />
     </div>

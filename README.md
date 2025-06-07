@@ -410,7 +410,32 @@ yarn type-check
 
 # Linting
 yarn lint
+
+# Start Storybook for component development and testing
+yarn storybook
+
+# Build Storybook for deployment
+yarn build-storybook
 ```
+
+### 📚 Storybook Development
+
+This project includes a comprehensive Storybook setup for component development and testing:
+
+- **Interactive Component Testing**: Test all components with different props and configurations
+- **Visual Documentation**: See components in action with live examples
+- **Sample Data Integration**: Test with realistic database schema examples
+- **Responsive Testing**: View components across different screen sizes
+- **Theme Testing**: Test both light and dark themes
+
+**Access Storybook**: Run `yarn storybook` and visit `http://localhost:6006`
+
+**Available Stories**:
+- **Introduction** - Overview and getting started guide
+- **VDT Dashboard** - Complete dashboard component with all variants
+- **StandaloneSchemaCanvas** - Embedded canvas component options
+- **UI Components** - Individual UI components (Button, Card, LoadingSpinner, etc.)
+- **Schema Builder** - Specialized schema building components (Toolbar, etc.)
 
 ## 🚨 Troubleshooting
 

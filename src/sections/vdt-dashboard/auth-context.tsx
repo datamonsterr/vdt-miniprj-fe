@@ -4,7 +4,7 @@ import { useAuth as useClerkAuth } from '@clerk/clerk-react'
 import type { InternalAuthContextType } from './types'
 
 // VDT Dashboard Clerk Configuration
-export const VDT_CLERK_PUBLISHABLE_KEY = "pk_test_cHJvZC1idXNoa2l0LTMyLmNsZXJrLmFjY291bnRzLmRldiQ"
+export const VDT_CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || ''
 
 // Internal auth context for the embeddable component
 const InternalAuthContext = createContext<InternalAuthContextType | null>(null)
