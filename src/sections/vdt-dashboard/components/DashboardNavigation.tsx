@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
 import { Database, Home, LogIn, Presentation, UserPlus } from 'lucide-react'
-import { useInternalAuth } from '../auth-context'
+import { useAuth } from '@/contexts/auth'
 import type { DashboardView } from '../types'
 
 export function DashboardNavigation({ 
@@ -11,7 +11,7 @@ export function DashboardNavigation({
   currentView: DashboardView
   onNavigate: (view: DashboardView) => void
 }) {
-  const { isSignedIn } = useInternalAuth()
+  const { isSignedIn } = useAuth()
 
   const navItems = [
     { view: 'home' as const, label: 'Home', icon: Home },

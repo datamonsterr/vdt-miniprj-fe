@@ -263,7 +263,7 @@ function SchemaCanvasInternal({
     addTable(newTable)
     setNewTableName('')
     setIsTableDialogOpen(false)
-    setSelectedTool(ToolType.SELECT)
+    setSelectedTool(ToolType.MOVE)
   }
 
   const handleUpdateTable = (updatedTable: Table) => {
@@ -324,7 +324,7 @@ function SchemaCanvasInternal({
   const handleColumnClick = (tableId: string, columnId: string) => {
     console.log('Column clicked:', { tableId, columnId, selectedTool: uiState.selectedTool })
     
-    if (uiState.selectedTool === ToolType.CONNECTION) {
+    if (uiState.selectedTool === ToolType.RELATIONSHIP) {
       if (!uiState.connectionStart) {
         // Start connection
         console.log('Starting connection from:', { tableId, columnId })
@@ -395,7 +395,7 @@ function SchemaCanvasInternal({
                 onClick={() => setUIState({
                   isConnecting: false,
                   connectionStart: null,
-                  selectedTool: ToolType.SELECT,
+                  selectedTool: ToolType.MOVE,
                 })}
               >
                 Cancel Connection
@@ -499,7 +499,7 @@ function SchemaCanvasInternal({
                     ? uiState.selectedColumnId?.toString() || undefined
                     : undefined
                 }
-                isConnectionMode={uiState.selectedTool === ToolType.CONNECTION}
+                isConnectionMode={uiState.selectedTool === ToolType.RELATIONSHIP}
                 isDraggable={false}
               />
             ))}
@@ -578,7 +578,7 @@ function SchemaCanvasInternal({
                       ? uiState.selectedColumnId?.toString() || undefined
                       : undefined
                   }
-                  isConnectionMode={uiState.selectedTool === ToolType.CONNECTION}
+                  isConnectionMode={uiState.selectedTool === ToolType.RELATIONSHIP}
                   isDraggable={uiState.selectedTool !== ToolType.HAND}
                 />
               ))}

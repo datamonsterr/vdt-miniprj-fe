@@ -58,12 +58,7 @@ A complete, self-contained VDT dashboard component that can be embedded in any R
       description: 'Button size',
       defaultValue: 'default',
     },
-    modalSize: {
-      control: 'select',
-      options: ['sm', 'md', 'lg', 'xl', 'full'],
-      description: 'Modal dialog size',
-      defaultValue: 'full',
-    },
+
     initialTheme: {
       control: 'select',
       options: ['light', 'dark'],
@@ -113,7 +108,6 @@ export const Default: Story = {
   args: {
     buttonText: 'Open VDT Dashboard',
     buttonVariant: 'default',
-    modalSize: 'full',
     requireAuthForSchemaBuilder: false,
     showDemo: true,
     showViewDatabases: true,
@@ -125,7 +119,6 @@ export const OutlineButton: Story = {
   args: {
     buttonText: 'Database Designer',
     buttonVariant: 'outline',
-    modalSize: 'xl',
     requireAuthForSchemaBuilder: false,
     initialTheme: 'light',
   },
@@ -136,7 +129,6 @@ export const GhostButton: Story = {
     buttonText: 'Schema Builder',
     buttonVariant: 'ghost',
     buttonSize: 'sm',
-    modalSize: 'lg',
     requireAuthForSchemaBuilder: false,
     initialTheme: 'dark',
   },
@@ -146,7 +138,6 @@ export const WithSampleData: Story = {
   args: {
     buttonText: 'Edit Schema',
     buttonVariant: 'default',
-    modalSize: 'full',
     requireAuthForSchemaBuilder: false,
     initialTables: sampleTables,
     initialForeignKeys: sampleForeignKeys,
@@ -159,7 +150,6 @@ export const SimpleSampleData: Story = {
   args: {
     buttonText: 'Quick Schema',
     buttonVariant: 'outline',
-    modalSize: 'xl',
     requireAuthForSchemaBuilder: false,
     initialTables: simpleSampleTables,
     initialForeignKeys: simpleSampleForeignKeys,
@@ -172,7 +162,6 @@ export const DemoMode: Story = {
   args: {
     buttonText: 'Try Demo',
     buttonVariant: 'secondary',
-    modalSize: 'full',
     requireAuthForSchemaBuilder: false,
     initialView: 'demo',
     showDemo: true,
@@ -184,7 +173,6 @@ export const AuthRequired: Story = {
   args: {
     buttonText: 'Pro Schema Builder',
     buttonVariant: 'default',
-    modalSize: 'full',
     requireAuthForSchemaBuilder: true,
     initialView: 'login',
     initialTheme: 'light',
@@ -195,7 +183,6 @@ export const NoNavigation: Story = {
   args: {
     buttonText: 'Embedded Canvas',
     buttonVariant: 'outline',
-    modalSize: 'lg',
     requireAuthForSchemaBuilder: false,
     showNavigation: false,
     initialView: 'schema-builder',
@@ -209,7 +196,6 @@ export const DarkTheme: Story = {
   args: {
     buttonText: 'Dark Mode',
     buttonVariant: 'outline',
-    modalSize: 'full',
     requireAuthForSchemaBuilder: false,
     initialTheme: 'dark',
     initialTables: sampleTables,
@@ -218,12 +204,11 @@ export const DarkTheme: Story = {
   },
 }
 
-export const SmallModal: Story = {
+export const Compact: Story = {
   args: {
     buttonText: 'Compact',
     buttonVariant: 'outline',
     buttonSize: 'sm',
-    modalSize: 'sm',
     requireAuthForSchemaBuilder: false,
     initialView: 'home',
     showDemo: false,

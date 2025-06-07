@@ -1,5 +1,5 @@
 // Main standalone component
-export { StandaloneSchemaCanvas } from './StandaloneSchemaCanvas'
+export { SchemaCanvasView } from './views/SchemaCanvasView'
 
 // Components from this section
 export { SchemaCanvas } from './components/SchemaCanvas'

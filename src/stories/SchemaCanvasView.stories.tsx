@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { StandaloneSchemaCanvas } from '../sections/schema-builder'
+import { SchemaCanvasView } from '../sections/schema-builder'
 import { sampleTables, sampleForeignKeys, simpleSampleTables, simpleSampleForeignKeys } from '../mocks/sampleData'
 import { fn } from '@storybook/test'
 
-const meta: Meta<typeof StandaloneSchemaCanvas> = {
+const meta: Meta<typeof SchemaCanvasView> = {
   title: 'VDT Dashboard/StandaloneSchemaCanvas',
-  component: StandaloneSchemaCanvas,
+  component: SchemaCanvasView,
   parameters: {
     layout: 'fullscreen',
     docs: {

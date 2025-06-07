@@ -7,7 +7,7 @@ import { LoginView } from '../views/LoginView'
 import { NotFoundView } from '../views/NotFoundView'
 import { SchemaBuilderView } from '../views/SchemaBuilderView'
 import { SignUpView } from '../views/SignUpView'
-import { ProtectedView } from './ProtectedView'
+import { ProtectedView } from '../views/ProtectedView'
 
 interface DashboardContentProps {
   currentView: DashboardView

@@ -1,12 +1,10 @@
 import { Z_INDEX } from '@/common'
-import { UserSettings } from '@/components/auth/UserSettings'
 import { Toolbar } from '@/components/schema-builder/Toolbar'
 import { UndoRedoToolbar } from '@/components/schema-builder/UndoRedoToolbar'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { SchemaBuilderThemeToggle } from '@/components/ui/schema-builder-theme-toggle'
 import { useUndoRedo } from '@/hooks/useUndoRedo'
 import { useSchemaStore } from '@/stores/schema-store'
 import { ToolType, SQLDataType } from '@/types/database'
@@ -44,8 +42,6 @@ export function SchemaCanvas({
   onExport,
   showToolbar = true,
   showUndoRedo = true,
-  showThemeToggle = true,
-  showUserSettings = true,
   className = '',
   style = {},
 }: Omit<SchemaCanvasProps, 'initialTheme'>) {
@@ -123,7 +119,7 @@ export function SchemaCanvas({
       setIsTableDialogOpen(false)
       
       // Reset tool to default
-      setUIState({ selectedTool: ToolType.SELECT })
+      setUIState({ selectedTool: ToolType.MOVE })
     }
   }
 
@@ -176,26 +172,6 @@ export function SchemaCanvas({
           style={{ zIndex: Z_INDEX.TOOLBAR }}
         >
           <UndoRedoToolbar />
-        </div>
-      )}
-
-      {/* Theme Toggle */}
-      {showThemeToggle && (
-        <div
-          className="absolute top-4 right-16"
-          style={{ zIndex: Z_INDEX.TOOLBAR }}
-        >
-          <SchemaBuilderThemeToggle />
-        </div>
-      )}
-
-      {/* User Settings */}
-      {showUserSettings && (
-        <div
-          className="absolute top-4 right-4"
-          style={{ zIndex: Z_INDEX.TOOLBAR }}
-        >
-          <UserSettings />
         </div>
       )}
 

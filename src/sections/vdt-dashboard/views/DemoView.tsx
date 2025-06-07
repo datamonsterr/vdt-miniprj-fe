@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { StandaloneSchemaCanvas } from '@/sections/schema-builder'
+import { SchemaCanvasView } from '@/sections/schema-builder'
 import type { Table, ForeignKey } from '@/types/database'
 import type { DashboardView } from '../types'
 
@@ -103,7 +103,7 @@ export function DemoView({ onNavigate }: { onNavigate: (view: DashboardView) => 
         </CardHeader>
         <CardContent>
           <div className="h-[500px] border rounded-lg overflow-hidden bg-white">
-            <StandaloneSchemaCanvas 
+            <SchemaCanvasView 
               onSchemaChange={handleSchemaChange}
               showToolbar={true}
               showUndoRedo={true}

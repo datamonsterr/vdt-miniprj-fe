@@ -35,7 +35,7 @@ export const useSchemaStore = create<SchemaStoreState>()(
       tables: [],
       foreignKeys: [],
       uiState: {
-        selectedTool: ToolType.SELECT,
+        selectedTool: ToolType.MOVE,
         selectedTableId: null,
         selectedColumnId: null,
         isConnecting: false,

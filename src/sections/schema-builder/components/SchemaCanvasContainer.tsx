@@ -46,7 +46,6 @@ export function SchemaCanvasContainer({
   
   // Force subscription to store changes - this helps with temporal middleware reactivity
   const tablesLength = useSchemaStore(state => state.tables.length)
-  const foreignKeysLength = useSchemaStore(state => state.foreignKeys.length)
   
   // Force re-render trigger for debugging reactivity issues
   const [, forceUpdate] = React.useState({})
@@ -174,7 +173,7 @@ export function SchemaCanvasContainer({
 
   const handleColumnClick = (tableId: string, columnId: string) => {
     // Only handle connection logic when in CONNECTION mode
-    if (uiState.selectedTool !== ToolType.CONNECTION) return
+    if (uiState.selectedTool !== ToolType.RELATIONSHIP) return
 
     console.log('Column clicked for connection:', { tableId, columnId, currentStart: uiState.connectionStart })
 
@@ -213,7 +212,7 @@ export function SchemaCanvasContainer({
 
   const handleDragEnd = (event: DragEndEvent) => {
     // Allow dragging when SELECT or TABLE tool is active
-    if (uiState.selectedTool !== ToolType.SELECT && uiState.selectedTool !== ToolType.TABLE) return
+    if (uiState.selectedTool !== ToolType.MOVE && uiState.selectedTool !== ToolType.TABLE) return
 
     const { active, delta } = event
     const tableId = active.id as string
@@ -276,9 +275,10 @@ export function SchemaCanvasContainer({
             onColumnClick={(tableId, columnId) => {
               handleColumnClick(tableId, columnId)
             }}
+            selectedTool={uiState.selectedTool}
             selectedColumnId={uiState.connectionStart?.columnId.toString()}
-            isConnectionMode={uiState.selectedTool === ToolType.CONNECTION}
-            isDraggable={uiState.selectedTool === ToolType.SELECT || uiState.selectedTool === ToolType.TABLE}
+            isConnectionMode={uiState.selectedTool === ToolType.RELATIONSHIP}
+            isDraggable={uiState.selectedTool === ToolType.MOVE || uiState.selectedTool === ToolType.TABLE}
           />
         ))}
       </div>
@@ -313,7 +313,7 @@ export function SchemaCanvasContainer({
 
   return (
     <>
-      {(uiState.selectedTool === ToolType.SELECT || uiState.selectedTool === ToolType.TABLE) ? (
+      {(uiState.selectedTool === ToolType.MOVE || uiState.selectedTool === ToolType.TABLE) ? (
         <DndContext onDragEnd={handleDragEnd}>
           {canvasContent}
         </DndContext>

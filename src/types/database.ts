@@ -65,11 +65,11 @@ export interface DatabaseSchema {
 
 // Tool types for the schema builder
 export enum ToolType {
-  SELECT = 'SELECT',
+  MOVE = 'MOVE',
   HAND = 'HAND',
   TABLE = 'TABLE',
-  COLUMN = 'COLUMN',
-  CONNECTION = 'CONNECTION',
+  EDIT = 'EDIT',
+  RELATIONSHIP = 'CONNECTION',
 }
 
 // UI state for the schema builder

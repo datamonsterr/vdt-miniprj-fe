@@ -1,4 +1,4 @@
-import { MousePointer, Table2, Plus, Link, Hand, Download } from 'lucide-react'
+import { MousePointer, Table2, Plus, Link, Hand, Download, Edit3 } from 'lucide-react'
 import { Toggle } from '@/components/ui/toggle'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -13,33 +13,33 @@ interface ToolbarProps {
 export function Toolbar({ selectedTool, onToolChange, onExport }: ToolbarProps) {
   const tools = [
     {
-      type: ToolType.SELECT,
-      icon: MousePointer,
-      label: 'Select',
-      description: 'Select and move tables',
-    },
-    {
       type: ToolType.HAND,
       icon: Hand,
       label: 'Hand',
       description: 'Pan and drag the canvas',
     },
     {
+      type: ToolType.MOVE,
+      icon: MousePointer,
+      label: 'Move',
+      description: 'Move tables around',
+    },
+    {
       type: ToolType.TABLE,
       icon: Table2,
-      label: 'Table',
+      label: 'New table',
       description: 'Add new tables',
     },
     {
-      type: ToolType.COLUMN,
-      icon: Plus,
-      label: 'Column',
-      description: 'Add columns to tables',
+      type: ToolType.EDIT,
+      icon: Edit3,
+      label: 'Edit',
+      description: 'Edit tables and columns',
     },
     {
-      type: ToolType.CONNECTION,
+      type: ToolType.RELATIONSHIP,
       icon: Link,
-      label: 'Connection',
+      label: 'Relationship',
       description: 'Create foreign key relationships',
     },
   ]

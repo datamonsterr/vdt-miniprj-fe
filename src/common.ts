@@ -24,3 +24,5 @@ export const Z_INDEX = {
 
 // Helper function to get z-index values
 export const getZIndex = (level: keyof typeof Z_INDEX): number => Z_INDEX[level]
+
+export const VDT_CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || ''

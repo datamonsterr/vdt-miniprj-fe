@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
-import { useInternalAuth } from '../auth-context'
+import { useAuth } from '@/contexts/auth'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
-import { LoginView } from '../views/LoginView'
+import { LoginView } from './LoginView'
 import type { DashboardView } from '../types'
 
 export function ProtectedView({ children }: { children: ReactNode; fallbackView: DashboardView }) {
-  const { isLoaded, isSignedIn } = useInternalAuth()
+  const { isLoaded, isSignedIn } = useAuth()
 
   if (!isLoaded) {
     return <LoadingSpinner />

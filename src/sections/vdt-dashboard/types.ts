@@ -1,10 +1,5 @@
 export type DashboardView = 'home' | 'dashboard' | 'schema-builder' | 'demo' | 'login' | 'signup' | 'not-found'
 
-export interface InternalAuthContextType {
-  isLoaded: boolean
-  isSignedIn: boolean
-}
-
 export interface VDTDashboardProps {
   /**
    * Trigger button text (default: "Open VDT Dashboard")

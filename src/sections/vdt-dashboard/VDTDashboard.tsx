@@ -4,11 +4,12 @@ import { ErrorFallback } from '@/components/ErrorFallback'
 import { ArrowLeft } from 'lucide-react'
 import { ClerkProvider } from '@clerk/clerk-react'
 import { ThemeProvider } from '@/contexts/theme'
-import { InternalAuthProvider, VDT_CLERK_PUBLISHABLE_KEY } from './auth-context'
+import { AuthProvider } from '@/contexts/auth'
 import { DashboardNavigation } from './components/DashboardNavigation'
 import { DashboardContent } from './components/DashboardContent'
 import type { VDTDashboardProps, DashboardView } from './types'
 import type { Table, ForeignKey } from '@/types/database'
+import { VDT_CLERK_PUBLISHABLE_KEY } from '@/common'
 
 /**
  * VDTDashboard - A complete, self-contained VDT dashboard component 
@@ -46,7 +47,6 @@ export function VDTDashboard({
   showDemo = true,
   showViewDatabases = true,
   onSchemaChange,
-  modalSize = "full",
   initialTheme = "light",
   initialTables = [],
   initialForeignKeys = [],
@@ -138,9 +138,9 @@ export function VDTDashboard({
   const DashboardWithProviders = () => (
     <ThemeProvider>
       <ClerkProvider publishableKey={VDT_CLERK_PUBLISHABLE_KEY}>
-        <InternalAuthProvider hasClerkProvider={true}>
+        <AuthProvider>
           {renderContent()}
-        </InternalAuthProvider>
+        </AuthProvider>
       </ClerkProvider>
     </ThemeProvider>
   )

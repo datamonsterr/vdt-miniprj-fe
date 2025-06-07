@@ -2,11 +2,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { Database, Presentation, LogIn, UserPlus } from 'lucide-react'
-import { useInternalAuth } from '../auth-context'
+import { useAuth } from '@/contexts/auth'
 import type { DashboardView } from '../types'
 
 export function HomeView({ onNavigate }: { onNavigate: (view: DashboardView) => void }) {
-  const { isSignedIn } = useInternalAuth()
+  const { isSignedIn } = useAuth()
 
   // Auto-navigate to dashboard if signed in
   if (isSignedIn) {

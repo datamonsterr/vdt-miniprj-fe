@@ -2,7 +2,7 @@
 export { VDTDashboard } from '@/sections/vdt-dashboard'
 export type { VDTDashboardProps } from '@/sections/vdt-dashboard'
 
-export { StandaloneSchemaCanvas } from '@/sections/schema-builder'
+export { SchemaCanvasView as StandaloneSchemaCanvas } from '@/sections/schema-builder'
 export type { StandaloneSchemaCanvasProps } from '@/sections/schema-builder'
 
 // Schema builder components (if needed individually)

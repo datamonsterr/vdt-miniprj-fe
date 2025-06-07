@@ -1,5 +1,5 @@
-import { StandaloneSchemaCanvas } from '@/sections/schema-builder'
-import { ProtectedView } from '../components/ProtectedView'
+import { SchemaCanvasView } from '@/sections/schema-builder'
+import { ProtectedView } from './ProtectedView'
 import { sampleTables, sampleForeignKeys } from '@/mocks/sampleData'
 import type { Table, ForeignKey } from '@/types/database'
 import type { DashboardView } from '../types'
@@ -20,7 +20,7 @@ export function SchemaBuilderView({
 }) {
   const content = (
     <div className="relative h-full w-full min-h-[600px]">
-      <StandaloneSchemaCanvas 
+      <SchemaCanvasView 
         onSchemaChange={onSchemaChange}
         showToolbar={true}
         showUndoRedo={true}

@@ -1,6 +1,6 @@
-import { SchemaCanvas } from './components/SchemaCanvas'
-import { SchemaCanvasProvider } from './components/SchemaCanvasProvider'
-import type { StandaloneSchemaCanvasProps } from './types'
+import { SchemaCanvas } from '../components/SchemaCanvas'
+import { SchemaCanvasProvider } from '../components/SchemaCanvasProvider'
+import type { StandaloneSchemaCanvasProps } from '../types'
 
 
 
@@ -26,7 +26,7 @@ import type { StandaloneSchemaCanvasProps } from './types'
  * />
  * ```
  */
-export function StandaloneSchemaCanvas({
+export function SchemaCanvasView({
   initialTheme = 'light',
   wrapperClassName = '',
   wrapperStyle = {},

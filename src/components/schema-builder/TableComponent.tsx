@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Draggable } from '@/components/drag-drop'
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog'
-import type { Table, Column, SQLDataType } from '@/types/database'
+import { type Table, type Column, type SQLDataType, ToolType } from '@/types/database'
 import type { UniqueIdentifier } from '@dnd-kit/core'
 import { ColumnDialog } from './ColumnDialog'
 
@@ -15,6 +15,7 @@ interface TableComponentProps {
   onDeleteTable: (tableId: UniqueIdentifier) => void
   onColumnClick: (tableId: string, columnId: string) => void
   selectedColumnId?: string
+  selectedTool: ToolType
   isConnectionMode?: boolean
   isDraggable?: boolean
 }
@@ -25,6 +26,7 @@ export function TableComponent({
   onDeleteTable,
   onColumnClick,
   selectedColumnId,
+  selectedTool,
   isConnectionMode = false,
   isDraggable = true,
 }: TableComponentProps) {
@@ -126,15 +128,17 @@ export function TableComponent({
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">{table.name}</h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDeleteTableClick}
-            className="h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground"
-            style={{ pointerEvents: 'auto' }}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          {selectedTool === ToolType.EDIT && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDeleteTableClick}
+              className="h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground"
+              style={{ pointerEvents: 'auto' }}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </CardHeader>
       <CardContent className="pt-0">
@@ -187,7 +191,7 @@ export function TableComponent({
                   </div>
                 </div>
               </div>
-              {!isConnectionMode && (
+              {!isConnectionMode && selectedTool === ToolType.EDIT && (
                 <div className="flex items-center gap-1">
                   <Button
                     variant="ghost"
@@ -224,14 +228,13 @@ export function TableComponent({
               )}
             </div>
           ))}
-          {!isConnectionMode && (
+          {!isConnectionMode && selectedTool === ToolType.EDIT && (
             <Button
               variant="outline"
               size="sm"
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
-                // Force immediate propagation stop to prevent drag handlers from interfering
                 e.nativeEvent.stopImmediatePropagation()
                 handleAddColumn()
               }}
