@@ -1,8 +1,8 @@
-import { MousePointer, Table2, Plus, Link, Hand, Download, Edit3 } from 'lucide-react'
-import { Toggle } from '@/components/ui/toggle'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Toggle } from '@/components/ui/toggle'
 import { ToolType } from '@/types/database'
+import { Download, Edit3, Hand, Link, MousePointer, Table2 } from 'lucide-react'
 
 interface ToolbarProps {
   selectedTool: ToolType

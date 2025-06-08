@@ -148,12 +148,6 @@ export function ConnectionLine({ foreignKey, tables, onDeleteConnection }: Conne
 
   if (!sourcePoint || !targetPoint) return null
 
-  // Get source and target table/column names for confirmation dialog
-  const sourceTable = tables.find(t => t.id === foreignKey.sourceTableId)
-  const targetTable = tables.find(t => t.id === foreignKey.targetTableId)
-  const sourceColumn = sourceTable?.columns.find(c => c.id === foreignKey.sourceColumnId)
-  const targetColumn = targetTable?.columns.find(c => c.id === foreignKey.targetColumnId)
-
   // Calculate 90-degree path with rounded corners
   const cornerRadius = 12
   const minOffset = 30 // Minimum distance before turning

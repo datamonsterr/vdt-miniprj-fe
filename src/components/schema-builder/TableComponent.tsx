@@ -1,12 +1,12 @@
-import { useState } from 'react'
-import { Plus, Edit, Trash2, Key, Link as LinkIcon } from 'lucide-react'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Draggable } from '@/components/drag-drop'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog'
-import { type Table, type Column, type SQLDataType, ToolType } from '@/types/database'
+import { type Column, type SQLDataType, type Table, ToolType } from '@/types/database'
 import type { UniqueIdentifier } from '@dnd-kit/core'
+import { Edit, Key, Link as LinkIcon, Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { ColumnDialog } from './ColumnDialog'
 
 interface TableComponentProps {

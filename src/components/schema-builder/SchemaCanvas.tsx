@@ -1,22 +1,19 @@
-import React, { useState } from 'react'
-import { DragDropProvider } from '@/contexts/drag-drop'
-import { TableComponent } from './TableComponent'
-import { ConnectionLine } from './ConnectionLine'
-import { Toolbar } from './Toolbar'
-import { UndoRedoToolbar } from './UndoRedoToolbar'
-import type { Table, ForeignKey, SchemaBuilderState } from '@/types/database'
-import { SQLDataType, ToolType } from '@/types/database'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { SchemaBuilderThemeToggle } from '@/components/ui/schema-builder-theme-toggle'
-import { ThemeProvider, useTheme } from '@/contexts/theme'
-import { UserSettings } from '@/components/auth/UserSettings'
-import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
-import { useSchemaStore } from '@/stores/schema-store'
-import { useUndoRedo } from '@/hooks/useUndoRedo'
 import { Z_INDEX } from '@/common'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { DragDropProvider } from '@/contexts/drag-drop'
+import { ThemeProvider, useTheme } from '@/contexts/theme'
+import { useUndoRedo } from '@/hooks/useUndoRedo'
+import { useSchemaStore } from '@/stores/schema-store'
+import type { ForeignKey, SchemaBuilderState, Table } from '@/types/database'
+import { SQLDataType, ToolType } from '@/types/database'
+import type { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
+import React, { useState } from 'react'
+import { ConnectionLine } from './ConnectionLine'
+import { TableComponent } from './TableComponent'
+import { Toolbar } from './Toolbar'
 
 export interface SchemaCanvasProps {
   /**
@@ -89,9 +86,6 @@ function SchemaCanvasInternal({
   initialForeignKeys = [],
   onSchemaChange,
   showToolbar = true,
-  showUndoRedo = true,
-  showThemeToggle = true,
-  showUserSettings = true,
   className = '',
   style = {},
 }: Omit<SchemaCanvasProps, 'initialTheme'>) {
@@ -103,7 +97,6 @@ function SchemaCanvasInternal({
   
   // Force subscription to store changes - this helps with temporal middleware reactivity
   const tablesLength = useSchemaStore(state => state.tables.length)
-  const foreignKeysLength = useSchemaStore(state => state.foreignKeys.length)
   
   // Debug: Log when tables change
   React.useEffect(() => {
@@ -405,29 +398,6 @@ function SchemaCanvasInternal({
         </div>
       )}
 
-      {/* Floating Undo/Redo Toolbar */}
-      {showUndoRedo && (
-        <div 
-          className="absolute top-4 right-4 flex gap-2" 
-          style={{ zIndex: Z_INDEX.TOOLBAR }}
-        >
-          <UndoRedoToolbar />
-          {showThemeToggle && <SchemaBuilderThemeToggle />}
-          {showUserSettings && <UserSettings />}
-        </div>
-      )}
-
-      {/* Floating Theme Toggle (when undo/redo is hidden) */}
-      {!showUndoRedo && (showThemeToggle || showUserSettings) && (
-        <div 
-          className="absolute top-4 right-4 flex gap-2" 
-          style={{ zIndex: Z_INDEX.TOOLBAR }}
-        >
-          {showThemeToggle && <SchemaBuilderThemeToggle />}
-          {showUserSettings && <UserSettings />}
-        </div>
-      )}
-
       {/* Main Canvas */}
       {uiState.selectedTool === ToolType.HAND ? (
         // Hand tool mode - no drag drop provider
@@ -494,6 +464,7 @@ function SchemaCanvasInternal({
                 onUpdateTable={handleUpdateTable}
                 onDeleteTable={handleDeleteTable}
                 onColumnClick={handleColumnClick}
+                selectedTool={uiState.selectedTool}
                 selectedColumnId={
                   uiState.selectedTableId === table.id.toString()
                     ? uiState.selectedColumnId?.toString() || undefined
@@ -573,6 +544,7 @@ function SchemaCanvasInternal({
                   onUpdateTable={handleUpdateTable}
                   onDeleteTable={handleDeleteTable}
                   onColumnClick={handleColumnClick}
+                  selectedTool={uiState.selectedTool}
                   selectedColumnId={
                     uiState.selectedTableId === table.id.toString()
                       ? uiState.selectedColumnId?.toString() || undefined

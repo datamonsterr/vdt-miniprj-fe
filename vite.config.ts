@@ -31,6 +31,12 @@ export default defineConfig(({ mode }) => {
             globals: {
               react: 'React',
               'react-dom': 'ReactDOM'
+            },
+            assetFileNames: (assetInfo) => {
+              if (assetInfo.name?.endsWith('.css')) {
+                return 'style.css'
+              }
+              return assetInfo.name || 'asset'
             }
           }
         },
