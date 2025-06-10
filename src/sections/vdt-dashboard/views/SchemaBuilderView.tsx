@@ -2,7 +2,7 @@ import { SchemaCanvasView } from '@/sections/schema-builder'
 import { ProtectedView } from './ProtectedView'
 import { sampleTables, sampleForeignKeys } from '@/mocks/sampleData'
 import type { Table, ForeignKey } from '@/types/database'
-import type { DashboardView } from '../types'
+import { View } from '../types'
 
 export function SchemaBuilderView({ 
   onSchemaChange, 
@@ -11,7 +11,7 @@ export function SchemaBuilderView({
   initialForeignKeys,
   requireAuth = false 
 }: {
-  onNavigate: (view: DashboardView) => void
+  onNavigate: (view: View) => void
   onSchemaChange?: (data: { tables: Table[]; foreignKeys: ForeignKey[] }) => void
   initialTheme: 'light' | 'dark'
   initialTables: Table[]
@@ -36,7 +36,7 @@ export function SchemaBuilderView({
 
   if (requireAuth) {
     return (
-      <ProtectedView fallbackView="login">
+      <ProtectedView fallbackView={View.LOGIN}>
         {content}
       </ProtectedView>
     )

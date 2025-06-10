@@ -2,15 +2,17 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Toggle } from '@/components/ui/toggle'
 import { ToolType } from '@/types/database'
-import { Download, Edit3, Hand, Link, MousePointer, Table2 } from 'lucide-react'
+import { Download, Edit3, Hand, Link, MousePointer, Table2, Save } from 'lucide-react'
 
 interface ToolbarProps {
   selectedTool: ToolType
   onToolChange: (tool: ToolType) => void
   onExport?: () => void
+  onSave?: () => void
+  isSaving?: boolean
 }
 
-export function Toolbar({ selectedTool, onToolChange, onExport }: ToolbarProps) {
+export function Toolbar({ selectedTool, onToolChange, onExport, onSave, isSaving }: ToolbarProps) {
   const tools = [
     {
       type: ToolType.HAND,
@@ -41,7 +43,7 @@ export function Toolbar({ selectedTool, onToolChange, onExport }: ToolbarProps) 
       icon: Link,
       label: 'Relationship',
       description: 'Create foreign key relationships',
-    },
+    }
   ]
 
   return (
@@ -69,9 +71,28 @@ export function Toolbar({ selectedTool, onToolChange, onExport }: ToolbarProps) 
           })}
         </div>
         
+        {/* Actions */}
+        <div className="mt-4 pt-4 border-t border-border space-y-2">
+          {/* Save Button */}
+          {onSave && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={onSave}
+              disabled={isSaving}
+              className="w-full justify-start gap-2"
+            >
+              {isSaving ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              ) : (
+                <Save className="h-4 w-4" />
+              )}
+              {isSaving ? 'Saving...' : 'Save Schema'}
+            </Button>
+          )}
+        
         {/* Export Button */}
         {onExport && (
-          <div className="mt-4 pt-4 border-t border-border">
             <Button
               variant="outline"
               size="sm"
@@ -81,8 +102,8 @@ export function Toolbar({ selectedTool, onToolChange, onExport }: ToolbarProps) 
               <Download className="h-4 w-4" />
               Export Schema
             </Button>
+          )}
           </div>
-        )}
       </div>
     </Card>
   )

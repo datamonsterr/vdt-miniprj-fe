@@ -1,5 +1,4 @@
 import React from 'react'
-import { ThemeProvider } from '@/contexts/theme/ThemeProvider'
 import { DragDropProvider } from '@/contexts/drag-drop'
 
 interface SchemaCanvasProviderProps {
@@ -15,12 +14,10 @@ interface SchemaCanvasProviderProps {
  * - Drag and drop provider for table interactions
  * - Isolated state management
  */
-export function SchemaCanvasProvider({ children, initialTheme = 'light' }: SchemaCanvasProviderProps) {
+export function SchemaCanvasProvider({ children }: SchemaCanvasProviderProps) {
   return (
-    <ThemeProvider defaultTheme={initialTheme}>
-      <DragDropProvider>
-        {children}
-      </DragDropProvider>
-    </ThemeProvider>
+    <DragDropProvider>
+      {children}
+    </DragDropProvider>
   )
 } 

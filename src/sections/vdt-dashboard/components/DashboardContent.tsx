@@ -1,18 +1,21 @@
 import type { ForeignKey, Table } from '@/types/database'
-import type { DashboardView } from '../types'
+import { View } from '../types'
 import { DashboardMainView } from '../views/DashboardMainView'
 import { DemoView } from '../views/DemoView'
-import { HomeView } from '../views/HomeView'
 import { LoginView } from '../views/LoginView'
 import { NotFoundView } from '../views/NotFoundView'
-import { SchemaBuilderView } from '../views/SchemaBuilderView'
+import { SchemaBuilderWrapper } from './SchemaBuilderWrapper'
 import { SignUpView } from '../views/SignUpView'
 import { ProtectedView } from '../views/ProtectedView'
+import { UserProfileView } from '@/sections/user-profile'
+import { useCallback } from 'react'
 
 interface DashboardContentProps {
-  currentView: DashboardView
-  onNavigate: (view: DashboardView) => void
+  currentView: View
+  onNavigate: (view: View) => void
   onSchemaChange?: (data: { tables: Table[]; foreignKeys: ForeignKey[] }) => void
+  onSchemaSelect?: (schemaId: string) => void
+  selectedSchemaId?: string
   showDemo: boolean
   showViewDatabases: boolean
   initialTheme: 'light' | 'dark'
@@ -25,6 +28,8 @@ export function DashboardContent({
   currentView,
   onNavigate,
   onSchemaChange,
+  onSchemaSelect,
+  selectedSchemaId,
   showDemo,
   showViewDatabases,
   initialTheme,
@@ -32,28 +37,42 @@ export function DashboardContent({
   initialForeignKeys,
   requireAuthForSchemaBuilder
 }: DashboardContentProps) {
+  const handleBack = useCallback(
+    () => onNavigate(View.DASHBOARD),
+    []
+  )
   switch (currentView) {
-    case 'home':
-      return <HomeView onNavigate={onNavigate} />
     case 'dashboard':
       return (
-        <ProtectedView fallbackView="login">
+        <ProtectedView fallbackView={View.LOGIN}>
           <DashboardMainView 
             onNavigate={onNavigate} 
             showDemo={showDemo} 
             showViewDatabases={showViewDatabases} 
+            onSchemaSelect={onSchemaSelect}
           />
         </ProtectedView>
       )
     case 'schema-builder':
-      return (
-        <SchemaBuilderView
-          onNavigate={onNavigate}
+      return requireAuthForSchemaBuilder ? (
+        <ProtectedView fallbackView={View.LOGIN}>
+          <SchemaBuilderWrapper
+            onBack={handleBack}
+            schemaId={selectedSchemaId}
+            onSchemaChange={onSchemaChange}
+            initialTheme={initialTheme}
+            initialTables={initialTables}
+            initialForeignKeys={initialForeignKeys}
+          />
+        </ProtectedView>
+      ) : (
+        <SchemaBuilderWrapper
+          onBack={handleBack}
+          schemaId={selectedSchemaId}
           onSchemaChange={onSchemaChange}
           initialTheme={initialTheme}
           initialTables={initialTables}
           initialForeignKeys={initialForeignKeys}
-          requireAuth={requireAuthForSchemaBuilder}
         />
       )
     case 'demo':
@@ -62,6 +81,12 @@ export function DashboardContent({
       return <LoginView />
     case 'signup':
       return <SignUpView />
+    case 'user-profile':
+      return (
+        <ProtectedView fallbackView={View.LOGIN}>
+          <UserProfileView onBack={handleBack} />
+        </ProtectedView>
+      )
     case 'not-found':
       return <NotFoundView onNavigate={onNavigate} />
     default:

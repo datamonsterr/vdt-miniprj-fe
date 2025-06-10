@@ -40,6 +40,8 @@ export function SchemaCanvas({
   initialForeignKeys = [],
   onSchemaChange,
   onExport,
+  onSave,
+  isSaving = false,
   showToolbar = true,
   showUndoRedo = true,
   className = '',
@@ -161,6 +163,8 @@ export function SchemaCanvas({
             onToolChange={handleToolChange} 
             selectedTool={uiState.selectedTool}
             onExport={onExport || handleExport}
+            onSave={onSave}
+            isSaving={isSaving}
           />
         </div>
       )}

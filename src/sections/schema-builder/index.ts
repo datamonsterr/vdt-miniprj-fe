@@ -5,9 +5,11 @@ export { SchemaCanvasView } from './views/SchemaCanvasView'
 export { SchemaCanvas } from './components/SchemaCanvas'
 export { SchemaCanvasProvider } from './components/SchemaCanvasProvider'
 export { SchemaCanvasContainer } from './components/SchemaCanvasContainer'
+export { SchemaHeader } from './components/SchemaHeader'
+export { SchemaNameModal } from './components/SchemaNameModal'
 
 // Types
-export type { StandaloneSchemaCanvasProps, SchemaCanvasProps } from './types'
+export type { SchemaCanvasViewProps as StandaloneSchemaCanvasProps, SchemaCanvasProps } from './types'
 
 // Re-export from components for advanced usage
 export { Toolbar } from '@/components/schema-builder/Toolbar'

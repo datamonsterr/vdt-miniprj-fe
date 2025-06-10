@@ -1,0 +1,8 @@
+---
+description: when working with api
+globs: 
+alwaysApply: false
+---
+API will be written inside src/api and split into files based on the feature like src/api/schemas.ts will have all api contains the features.
+Endpoints will be updated based on backend_docs/api.md inside endpoints object in src/api/axios.ts
+Use axios to call the api, for each api create function like getUserById for example then use swr to create function useGetUserById to wrap the function for handling error and loading simpler.

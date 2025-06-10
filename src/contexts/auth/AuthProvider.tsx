@@ -9,13 +9,14 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const { user, isLoaded } = useUser()
-  const { isSignedIn, signOut } = useClerkAuth()
+  const { isSignedIn, signOut, getToken } = useClerkAuth()
 
   const value: AuthContextType = {
     user,
     isLoaded,
     isSignedIn,
     signOut,
+    getToken,
   }
 
   return (

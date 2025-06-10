@@ -1,15 +1,13 @@
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { ErrorFallback } from '@/components/ErrorFallback'
-import { ArrowLeft } from 'lucide-react'
-import { ClerkProvider } from '@clerk/clerk-react'
-import { ThemeProvider } from '@/contexts/theme'
-import { AuthProvider } from '@/contexts/auth'
-import { DashboardNavigation } from './components/DashboardNavigation'
-import { DashboardContent } from './components/DashboardContent'
-import type { VDTDashboardProps, DashboardView } from './types'
-import type { Table, ForeignKey } from '@/types/database'
 import { VDT_CLERK_PUBLISHABLE_KEY } from '@/common'
+import { ErrorFallback } from '@/components/ErrorFallback'
+import { AuthProvider } from '@/contexts/auth'
+import { ThemeProvider } from '@/contexts/theme'
+import type { ForeignKey, Table } from '@/types/database'
+import { ClerkProvider } from '@clerk/clerk-react'
+import { useState } from 'react'
+import { DashboardContent } from './components/DashboardContent'
+import Navbar from './components/Navbar'
+import { View, type VDTDashboardProps } from './types'
 
 /**
  * VDTDashboard - A complete, self-contained VDT dashboard component 
@@ -40,10 +38,6 @@ import { VDT_CLERK_PUBLISHABLE_KEY } from '@/common'
  * ```
  */
 export function VDTDashboard({
-  buttonText = "Open VDT Dashboard",
-  buttonVariant = "default",
-  buttonSize = "default",
-  buttonClassName = "",
   showDemo = true,
   showViewDatabases = true,
   onSchemaChange,
@@ -51,27 +45,12 @@ export function VDTDashboard({
   initialTables = [],
   initialForeignKeys = [],
   requireAuthForSchemaBuilder = false,
-  initialView = "home",
-  showNavigation = true
 }: VDTDashboardProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [currentView, setCurrentView] = useState<DashboardView>(initialView)
+  const [currentView, setCurrentView] = useState<View>(View.DASHBOARD)
   const [error, setError] = useState<Error | null>(null)
+  const [selectedSchemaId, setSelectedSchemaId] = useState<string | undefined>(undefined)
 
-  // Reset view when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      setCurrentView(initialView)
-      setError(null)
-    }
-  }, [isOpen, initialView])
-
-  // Full screen overlay - modalSize is no longer needed
-  const handleClose = () => {
-    setIsOpen(false)
-  }
-
-  const handleNavigate = (view: DashboardView) => {
+  const handleNavigate = (view: View) => {
     setCurrentView(view)
     setError(null)
   }
@@ -82,85 +61,48 @@ export function VDTDashboard({
     }
   }
 
+  const handleSchemaSelect = (schemaId: string) => {
+    setSelectedSchemaId(schemaId)
+  }
+
   if (error) {
     return (
-      <ErrorFallback 
-        error={error} 
-        resetError={() => setError(null)} 
+      <ErrorFallback
+        error={error}
+        resetError={() => setError(null)}
       />
     )
   }
 
-  const renderContent = () => {
-    try {
-      return (
-        <div className="flex flex-col h-full">
-          {/* Back button - always show when in full screen mode */}
-          <div className="flex items-center p-4 border-b bg-background">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClose}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </Button>
-          </div>
-          
-          {showNavigation && (
-            <DashboardNavigation 
-              currentView={currentView} 
-              onNavigate={handleNavigate}
-            />
-          )}
-          <div className="flex-1 overflow-auto">
-            <DashboardContent
-              currentView={currentView}
-              onNavigate={handleNavigate}
-              onSchemaChange={handleSchemaChange}
-              showDemo={showDemo}
-              showViewDatabases={showViewDatabases}
-              initialTheme={initialTheme}
-              initialTables={initialTables}
-              initialForeignKeys={initialForeignKeys}
-              requireAuthForSchemaBuilder={requireAuthForSchemaBuilder}
-            />
-          </div>
-        </div>
-      )
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Unknown error'))
-      return null
-    }
-  }
-
-  const DashboardWithProviders = () => (
-    <ThemeProvider>
-      <ClerkProvider publishableKey={VDT_CLERK_PUBLISHABLE_KEY}>
-        <AuthProvider>
-          {renderContent()}
-        </AuthProvider>
-      </ClerkProvider>
-    </ThemeProvider>
-  )
-
   return (
     <>
-      {!isOpen ? (
-        <Button
-          variant={buttonVariant}
-          size={buttonSize}
-          className={buttonClassName}
-          onClick={() => setIsOpen(true)}
-        >
-          {buttonText}
-        </Button>
-      ) : (
-        <div className="fixed inset-0 z-50 bg-background h-screen w-screen">
-          <DashboardWithProviders />
-        </div>
-      )}
+      <div className="fixed inset-0 z-50 bg-background h-screen w-screen">
+        <ThemeProvider>
+          <ClerkProvider publishableKey={VDT_CLERK_PUBLISHABLE_KEY}>
+            <AuthProvider>
+              <div className="flex flex-col h-full">
+                {currentView !== View.DASHBOARD && <Navbar handleNavigate={handleNavigate} />}
+
+                <div className="flex-1 overflow-auto">
+                  <DashboardContent
+                    currentView={currentView}
+                    onNavigate={handleNavigate}
+                    onSchemaChange={handleSchemaChange}
+                    onSchemaSelect={handleSchemaSelect}
+                    selectedSchemaId={selectedSchemaId}
+                    showDemo={showDemo}
+                    showViewDatabases={showViewDatabases}
+                    initialTheme={initialTheme}
+                    initialTables={initialTables}
+                    initialForeignKeys={initialForeignKeys}
+                    requireAuthForSchemaBuilder={requireAuthForSchemaBuilder}
+                  />
+                </div>
+              </div>
+            </AuthProvider>
+          </ClerkProvider>
+        </ThemeProvider>
+      </div>
     </>
   )
 } 

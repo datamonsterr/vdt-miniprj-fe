@@ -23,8 +23,8 @@ A complete, self-contained VDT dashboard component that can be embedded in any R
 - Schema builder with drag-and-drop functionality
 - Undo/redo capabilities
 - Theme management (light/dark) isolated to the dashboard
-- Routing and navigation within the full screen view
 - Back button to return to the original view
+- Schema name display and editing functionality
 
 ## Usage
 \`\`\`tsx
@@ -41,24 +41,6 @@ A complete, self-contained VDT dashboard component that can be embedded in any R
     },
   },
   argTypes: {
-    buttonText: {
-      control: 'text',
-      description: 'Text displayed on the trigger button',
-      defaultValue: 'Open VDT Dashboard',
-    },
-    buttonVariant: {
-      control: 'select',
-      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
-      description: 'Button style variant',
-      defaultValue: 'default',
-    },
-    buttonSize: {
-      control: 'select',
-      options: ['default', 'sm', 'lg', 'icon'],
-      description: 'Button size',
-      defaultValue: 'default',
-    },
-
     initialTheme: {
       control: 'select',
       options: ['light', 'dark'],
@@ -79,17 +61,6 @@ A complete, self-contained VDT dashboard component that can be embedded in any R
       control: 'boolean',
       description: 'Whether to show view databases functionality',
       defaultValue: true,
-    },
-    showNavigation: {
-      control: 'boolean',
-      description: 'Whether to show navigation bar',
-      defaultValue: true,
-    },
-    initialView: {
-      control: 'select',
-      options: ['home', 'dashboard', 'schema-builder', 'demo', 'login', 'signup', 'not-found'],
-      description: 'Initial view to show when opened',
-      defaultValue: 'home',
     },
     onSchemaChange: {
       action: 'schema-changed',
@@ -179,12 +150,11 @@ export const AuthRequired: Story = {
   },
 }
 
-export const NoNavigation: Story = {
+export const DirectToSchemaBuilder: Story = {
   args: {
-    buttonText: 'Embedded Canvas',
+    buttonText: 'Edit Schema',
     buttonVariant: 'outline',
     requireAuthForSchemaBuilder: false,
-    showNavigation: false,
     initialView: 'schema-builder',
     initialTables: simpleSampleTables,
     initialForeignKeys: simpleSampleForeignKeys,

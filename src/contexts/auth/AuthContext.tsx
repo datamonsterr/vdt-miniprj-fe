@@ -6,6 +6,7 @@ export interface AuthContextType {
   isLoaded: boolean
   isSignedIn: boolean | undefined
   signOut: () => Promise<void>
+  getToken: () => Promise<string | null>
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)

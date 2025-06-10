@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { AlertCircle } from 'lucide-react'
-import type { DashboardView } from '../types'
+import { View } from '../types'
 
-export function NotFoundView({ onNavigate }: { onNavigate: (view: DashboardView) => void }) {
+export function NotFoundView({ onNavigate }: { onNavigate: (view: View) => void }) {
   return (
     <div className="p-6 text-center space-y-4">
       <div className="flex items-center justify-center text-muted-foreground">
@@ -12,7 +12,7 @@ export function NotFoundView({ onNavigate }: { onNavigate: (view: DashboardView)
       <p className="text-muted-foreground">
         The page you're looking for doesn't exist.
       </p>
-      <Button onClick={() => onNavigate('home')}>
+      <Button onClick={() => onNavigate(View.DASHBOARD)}>
         Go Home
       </Button>
     </div>

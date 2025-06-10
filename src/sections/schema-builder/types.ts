@@ -18,6 +18,18 @@ export interface SchemaCanvasProps {
    */
   onExport?: () => void
   /**
+   * Callback for saving the schema
+   */
+  onSave?: () => void
+  /**
+   * Whether the schema is currently being saved
+   */
+  isSaving?: boolean
+  /**
+   * Current schema ID (if editing existing schema)
+   */
+  schemaId?: string
+  /**
    * Whether to show the toolbar (default: true)
    */
   showToolbar?: boolean
@@ -47,7 +59,7 @@ export interface SchemaCanvasProps {
   style?: React.CSSProperties
 }
 
-export interface StandaloneSchemaCanvasProps extends Omit<SchemaCanvasProps, 'initialTheme'> {
+export interface SchemaCanvasViewProps extends Omit<SchemaCanvasProps, 'initialTheme'> {
   /**
    * Initial theme for the schema builder (default: 'light')
    */

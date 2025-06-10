@@ -5,10 +5,6 @@ export type { VDTDashboardProps } from '@/sections/vdt-dashboard'
 export { SchemaCanvasView as StandaloneSchemaCanvas } from '@/sections/schema-builder'
 export type { StandaloneSchemaCanvasProps } from '@/sections/schema-builder'
 
-// Schema builder components (if needed individually)
-export { SchemaCanvas } from './schema-builder/SchemaCanvas'
-export type { SchemaCanvasProps } from './schema-builder/SchemaCanvas'
-
 // Reusable components
 export { LoadingSpinner } from './LoadingSpinner'
 export { ErrorFallback } from './ErrorFallback'

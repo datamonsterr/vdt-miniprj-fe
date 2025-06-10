@@ -3,9 +3,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { SchemaCanvasView } from '@/sections/schema-builder'
 import type { Table, ForeignKey } from '@/types/database'
-import type { DashboardView } from '../types'
+import { View } from '../types'
 
-export function DemoView({ onNavigate }: { onNavigate: (view: DashboardView) => void }) {
+export function DemoView({ onNavigate }: { onNavigate: (view: View) => void }) {
   const [schemaData, setSchemaData] = useState<{ tables: Table[]; foreignKeys: ForeignKey[] }>({
     tables: [],
     foreignKeys: []
@@ -103,7 +103,7 @@ export function DemoView({ onNavigate }: { onNavigate: (view: DashboardView) => 
         </CardHeader>
         <CardContent>
           <div className="h-[500px] border rounded-lg overflow-hidden bg-white">
-            <SchemaCanvasView 
+            <SchemaCanvasView
               onSchemaChange={handleSchemaChange}
               showToolbar={true}
               showUndoRedo={true}
@@ -158,7 +158,7 @@ export function DemoView({ onNavigate }: { onNavigate: (view: DashboardView) => 
           <CardContent>
             <div className="p-4 bg-muted rounded-lg">
               <pre className="text-xs bg-background p-2 rounded border overflow-x-auto">
-{`import { VDTDashboard } from '@datamonsterr/vdt-dashboard'
+                {`import { VDTDashboard } from '@datamonsterr/vdt-dashboard'
 
 <VDTDashboard 
   buttonText="Design Database"
@@ -185,7 +185,7 @@ export function DemoView({ onNavigate }: { onNavigate: (view: DashboardView) => 
         </CardHeader>
         <CardContent>
           <div className="flex gap-4">
-            <Button onClick={() => onNavigate('schema-builder')}>
+            <Button onClick={() => onNavigate(View.SCHEMA_BUILDER)}>
               Try Schema Builder
             </Button>
             <Button variant="outline" asChild>
